@@ -9,7 +9,7 @@ type Post struct {
 	LikeSum     int
 	LendHandSum int //可以通过该成员来判断是seekHelp(>=0)还是lendHand(-1)
 	CommentSum  int
-	Status      int
+	Status      bool
 	Tags        GormStrList
 	Ban         int
 	UserID      int
@@ -29,3 +29,11 @@ type PostStats struct {
 	ImagePath  GormStrList
 	PostID     int
 }
+
+const (
+	View int = iota
+	Modify
+	ViewComment
+	AddComment
+	AddLendHand
+)
