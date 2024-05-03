@@ -1,0 +1,104 @@
+# 系统配置
+# 管理员的邮箱(通过该邮箱来发送验证码到指定邮箱)
+senderMailbox: helpthem@qq.com
+# smtp服务器地址
+smtpServerPath: smtp.qq.com
+# smtp服务器端口
+smtpServerPort: 25
+# 登录邮箱验证码
+smtpServerVerification: qzwymkrpsnhzdcaj
+
+# 网站配置
+# token过期时间(单位:小时)
+tokenDuration: 24
+# 用户收到验证码的过期时间(单位:分钟)
+verificationCodeDuration: 3
+# 用户初始分数
+userInitReward: 3
+# 文档高度限制(单位：前端的height)
+maxDocumentHeight: 5000
+# 文档长度限制(toDelta后字符串的长度)
+maxDocumentLength: 1000
+# 文档中的所有图片大小限制(单位：MB)
+maxPictureSize: 10
+# 文档中上传文件的最大限制(单位：KB)
+maxCodeFileSize: 10
+# 每天用户允许发布的评论限制(根据日期来判断今天剩余次数)
+dayUserCommentLimit: 50
+# todayShareCodeSurplus -> redis
+# CommentSurplus + lastPublishDate -> mysql
+
+
+# 权限配置
+# 设置一些全局参数，保存在redis里面
+# 通过调整这些参数，可以控制网站的行为
+# 检查操作应该全部放在中间件中，符合全局控制的理念，并且可以避免局部复杂化
+# 安全模式，除了管理员以外的其他用户不能进行任何操作
+safeBan: permit
+# 发布求助
+publishSeekHelpBan: permit
+# 浏览求助
+viewSeekHelpBan: permit
+# 登录方可浏览求助
+loginViewSeekHelpBan: permit
+# 修改求助
+editSeekHelpBan: permit
+# 发布帮助
+publishLendHandBan: permit
+# 浏览帮助
+viewLendHandBan: permit
+# 登陆方可浏览帮助
+loginViewLendHandBan: permit
+# 修改帮助
+editLendHandBan: permit
+# 发布评论
+publishCommentBan: permit
+# 浏览评论
+viewCommentBan: permit
+# 登录方可浏览评论
+loginViewCommentBan: permit
+
+# 不应该修改的配置
+# mysql密码 docker run -d --name mysql-container -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
+mysqlPassword: 258456jkls
+# 设置空闲连接数量
+maxIdleConnects: 3
+# 后端服务器端口
+webPath: :443
+# mysql地址
+mysqlPath: helpMeMysql
+# mysql端口
+mysqlPort: 3306
+# redis地址
+redisPath: helpMeRedis
+# redis端口
+redisPort: 6379
+# 上传的表单数据的大小上限(单位:MB)
+maxMultipartMemory: 16
+# 储存文件的目录名称
+rootFilePath: files/
+# 储存用户上传代码目录
+codeFilePath: codes/
+# 储存用户文档中含有的图片目录
+imageFilePath: images/
+# 储存用户头像目录
+avatarFilePath: avatars/
+
+
+# 网站的访问路径
+debugWebPath: 127.0.0.1:8080
+# mysql地址
+debugMysqlPath: 112.124.52.31
+# mysql端口
+debugMysqlPort: 5001
+# redis地址
+debugRedisPath: 112.124.52.31
+# redis端口
+debugRedisPort: 5002
+
+
+
+
+
+
+
