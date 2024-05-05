@@ -36,7 +36,7 @@ func SendCode(toUserEmail, code string) error {
 	e := email.NewEmail()
 	e.From = config.Config.SenderMailbox
 	e.To = []string{toUserEmail}
-	e.Subject = "You received a verification code from help-cookie !"
+	e.Subject = "You received a verification code from help-me debug website !"
 	e.HTML = []byte("<b>" + code + "</b>")
 	return e.Send(config.Config.SmtpServerPath+":"+config.Config.SmtpServerPort,
 		smtp.PlainAuth("", config.Config.SenderMailbox,

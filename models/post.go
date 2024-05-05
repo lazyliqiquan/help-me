@@ -15,8 +15,8 @@ type Post struct {
 	UserID      int
 	User        User
 	Comments    []Comment
-	PostID      int
-	Posts       []Post `gorm:"foreignKey:postID"`
+	LendHandID  int
+	LendHands   []Post `gorm:"foreignKey:LendHandID"`
 	PostStats   PostStats
 }
 

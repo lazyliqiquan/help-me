@@ -1,19 +1,20 @@
 package middlewares
 
 import (
+	"github.com/lazyliqiquan/help-me/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lazyliqiquan/help-me/models"
 )
 
-// 安全模式
-// 附带解析token(后续GetInt("id")不能获取到，表明用户没有有效token或者处于封禁状态)
+// TokenSafeModel 安全模式
+// 附带解析token(后续GetInt("id")为0，表明用户没有有效token或者处于封禁状态)
 func TokenSafeModel() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		safeBan, err := models.RDB.Get(c, "safeBan").Result()
 		if err != nil {
-			logger.Errorln(err)
+			utils.Logger.Errorln(err)
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "Redis operation failed",
@@ -27,13 +28,13 @@ func TokenSafeModel() gin.HandlerFunc {
 		if auth != "" {
 			userClaim, userClaimErr = AnalyseToken(auth)
 			if userClaimErr != nil {
-				logger.Errorln(userClaimErr)
+				utils.Logger.Errorln(userClaimErr)
 			} else {
 				// 向数据库获取最新的user ban
 				err := models.DB.Model(&models.User{ID: userClaim.Id}).
 					Select("ban").Scan(&userBan).Error
 				if err != nil {
-					logger.Errorln(err)
+					utils.Logger.Errorln(err)
 					c.JSON(http.StatusOK, gin.H{
 						"code": 1,
 						"msg":  "Mysql operation failed",
@@ -53,43 +54,43 @@ func TokenSafeModel() gin.HandlerFunc {
 				c.Set("ban", userBan)
 			}
 		}
-		if safeBan != "permit" && (auth == "" || userClaimErr != nil || !models.JudgePermit(models.Admin, userBan)) {
+		if safeBan != utils.Permit && (auth == "" || userClaimErr != nil || !models.JudgePermit(models.Admin, userBan)) {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "The website is currently in safe mode and can only be operated by administrators",
 			})
 			c.Abort()
 		}
-		logger.Infoln("TokenSafeModel")
+		utils.Logger.Infoln("TokenSafeModel")
 		c.Next()
 	}
 }
 
-// 主要针对找回密码和注册
+// OtherSafeModel 主要针对找回密码和注册
 func OtherSafeModel() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		safeBan, err := models.RDB.Get(c, "safeBan").Result()
 		if err != nil {
-			logger.Errorln(err)
+			utils.Logger.Errorln(err)
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "Redis operation failed",
 			})
 			c.Abort()
 		}
-		if safeBan != "permit" {
+		if safeBan != utils.Permit {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "The site is currently in safe mode and this feature is not available",
 			})
 			c.Abort()
 		}
-		logger.Infoln("otherSafeModel")
+		utils.Logger.Infoln("OtherSafeModel")
 		c.Next()
 	}
 }
 
-// 判断是否登录
+// LoginModel 判断是否登录
 func LoginModel() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// id不可能为0，如果为0，说明用户未登录
@@ -101,7 +102,7 @@ func LoginModel() gin.HandlerFunc {
 			})
 			c.Abort()
 		}
-		logger.Infoln("LoginModel")
+		utils.Logger.Infoln("LoginModel")
 		c.Next()
 	}
 }

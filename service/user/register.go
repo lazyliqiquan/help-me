@@ -1,10 +1,10 @@
 package user
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/lazyliqiquan/help-me/config"
 	"github.com/lazyliqiquan/help-me/models"
-	"github.com/lazyliqiquan/help-me/service"
 	"github.com/lazyliqiquan/help-me/utils"
 	"github.com/redis/go-redis/v9"
 	"net/http"
@@ -13,6 +13,7 @@ import (
 // Register
 // @Tags 公共方法
 // @Summary 注册新用户，第一个注册的用户是管理员
+// @Accept multipart/form-data
 // @Param email formData string true "email"
 // @Param code formData string true "code"
 // @Param name formData string true "name"
@@ -36,13 +37,13 @@ func Register(c *gin.Context) {
 	// 验证验证码是否正确
 	sysCode, err := models.RDB.Get(c, email).Result()
 	if err != nil {
-		if err == redis.Nil {
+		if errors.Is(err, redis.Nil) {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "The verification code has expired",
 			})
 		} else {
-			service.Logger.Errorln(err)
+			utils.Logger.Errorln(err)
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "Redis operation failure",
@@ -62,7 +63,7 @@ func Register(c *gin.Context) {
 	err = models.DB.Model(&models.User{}).
 		Where("email = ? OR name = ?", email, name).Count(&cnt).Error
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Mysql operation failure",
@@ -79,7 +80,7 @@ func Register(c *gin.Context) {
 	var userCount int64
 	err = models.DB.Model(&models.User{}).Count(&userCount).Error
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Mysql operation failure",
@@ -101,7 +102,7 @@ func Register(c *gin.Context) {
 	}
 	err = models.DB.Create(user).Error
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Mysql operation failure",
@@ -111,7 +112,7 @@ func Register(c *gin.Context) {
 	// 成功创建用户后，应该立即将验证码销毁掉，以免一把钥匙打开多道们的情况出现
 	err = models.RDB.Unlink(c, email).Err()
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,

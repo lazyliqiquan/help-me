@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lazyliqiquan/help-me/config"
 	"github.com/lazyliqiquan/help-me/models"
-	"github.com/lazyliqiquan/help-me/service"
 	"github.com/lazyliqiquan/help-me/utils"
 	"net/http"
 	"time"
@@ -13,6 +12,7 @@ import (
 // SendCode
 // @Tags 公共方法
 // @Summary 发送验证码(一个验证码只能处理一个操作，用完就要删除)
+// @Accept multipart/form-data
 // @Param email formData string true "email"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /send-code [post]
@@ -28,7 +28,7 @@ func SendCode(c *gin.Context) {
 	// _, err := models.RDB.Get(c, email).Result()
 	ttlResult, err := models.RDB.TTL(c, email).Result()
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "The redis operation failed",
@@ -53,7 +53,7 @@ func SendCode(c *gin.Context) {
 	code := utils.GetRand()
 	err = utils.SendCode(email, code)
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Failed to send the verification code",
@@ -63,7 +63,7 @@ func SendCode(c *gin.Context) {
 	err = models.RDB.Set(c, email, code,
 		time.Duration(config.Config.VerificationCodeDuration*int(time.Minute))).Err()
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Unable to write data to redis",

@@ -1,4 +1,134 @@
 info:
   contact: {}
-paths: {}
+paths:
+  /download-file:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: filePath
+        in: formData
+        name: filePath
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 下载指定路径的文件
+      tags:
+      - 公共方法
+  /find-password:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: code
+        in: formData
+        name: code
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 找回密码
+      tags:
+      - 公共方法
+  /login:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: loginType
+        in: formData
+        name: loginType
+        required: true
+        type: string
+      - description: nameOrMail
+        in: formData
+        name: nameOrMail
+        required: true
+        type: string
+      - description: authCode
+        in: formData
+        name: authCode
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 用户登录
+      tags:
+      - 公共方法
+  /register:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: code
+        in: formData
+        name: code
+        required: true
+        type: string
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: registerTime
+        in: formData
+        name: registerTime
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 注册新用户，第一个注册的用户是管理员
+      tags:
+      - 公共方法
+  /send-code:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 发送验证码(一个验证码只能处理一个操作，用完就要删除)
+      tags:
+      - 公共方法
 swagger: "2.0"

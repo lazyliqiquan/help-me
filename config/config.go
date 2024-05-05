@@ -29,14 +29,15 @@ type WebConfig struct {
 	PublishSeekHelpBan   string `yaml:"publishSeekHelpBan"`
 	ViewSeekHelpBan      string `yaml:"viewSeekHelpBan"`
 	LoginViewSeekHelpBan string `yaml:"loginViewSeekHelpBan"`
-	EditSeekHelpBan      string `yaml:"editSeekHelpBan"`
+	ModifySeekHelpBan    string `yaml:"modifySeekHelpBan"`
 	PublishLendHandBan   string `yaml:"publishLendHandBan"`
 	ViewLendHandBan      string `yaml:"viewLendHandBan"`
 	LoginViewLendHandBan string `yaml:"loginViewLendHandBan"`
-	EditLendHandBan      string `yaml:"editLendHandBan"`
+	ModifyLendHandBan    string `yaml:"modifyLendHandBan"`
 	PublishCommentBan    string `yaml:"publishCommentBan"`
 	ViewCommentBan       string `yaml:"viewCommentBan"`
 	LoginViewCommentBan  string `yaml:"loginViewCommentBan"`
+	ModifyCommentBan     string `yaml:"modifyCommentBan"`
 	// 不应该修改的配置
 	MysqlPassword      string `yaml:"mysqlPassword"`
 	WebPath            string `yaml:"webPath"`
@@ -82,14 +83,15 @@ func (c *WebConfig) RedisInit() map[string]any {
 	res["publishSeekHelpBan"] = c.PublishSeekHelpBan
 	res["viewSeekHelpBan"] = c.ViewSeekHelpBan
 	res["loginViewSeekHelpBan"] = c.LoginViewSeekHelpBan
-	res["editSeekHelpBan"] = c.EditSeekHelpBan
+	res["modifySeekHelpBan"] = c.ModifySeekHelpBan
 	res["publishLendHandBan"] = c.PublishLendHandBan
 	res["viewLendHandBan"] = c.ViewLendHandBan
 	res["loginViewLendHandBan"] = c.LoginViewLendHandBan
-	res["editLendHandBan"] = c.EditLendHandBan
+	res["modifyLendHandBan"] = c.ModifyLendHandBan
 	res["publishCommentBan"] = c.PublishCommentBan
 	res["viewCommentBan"] = c.ViewCommentBan
 	res["loginViewCommentBan"] = c.LoginViewCommentBan
+	res["modifyCommentBan"] = c.ModifyCommentBan
 	return res
 }
 

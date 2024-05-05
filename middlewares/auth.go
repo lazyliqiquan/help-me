@@ -8,24 +8,18 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
 	"github.com/lazyliqiquan/help-me/models"
-	"go.uber.org/zap"
 )
 
 type AuthType int
 
 var (
 	TokenPrivateKey []byte //token加密私钥
-	logger          *zap.SugaredLogger
 )
 
-// 用来生成token的结构，主要用来鉴权
+// UserClaims 用来生成token的结构，主要用来鉴权
 type UserClaims struct {
-	Id int //只有用户id是不会变的
+	Id int //只有用户id是不会变的,而权限可能发生改变，为获取到最新的权限，可以调用一次数据库查询
 	jwt.StandardClaims
-}
-
-func Init(loggerInstance *zap.SugaredLogger) {
-	logger = loggerInstance
 }
 
 func init() {
@@ -34,7 +28,7 @@ func init() {
 	TokenPrivateKey = []byte(uuid.New().String())
 }
 
-// 好像每次程序重新启动，之前的token全部失效了
+// GenerateToken 好像每次程序重新启动，之前的token全部失效了
 // 生成 token
 func GenerateToken(id int) (string, error) {
 	tokenDuration, err := models.RDB.Get(context.Background(), "tokenDuration").Int()
@@ -55,7 +49,7 @@ func GenerateToken(id int) (string, error) {
 	return tokenString, nil
 }
 
-// 解析 token
+// AnalyseToken 解析 token
 func AnalyseToken(tokenString string) (*UserClaims, error) {
 	userClaim := new(UserClaims)
 	claims, err := jwt.ParseWithClaims(tokenString, userClaim,

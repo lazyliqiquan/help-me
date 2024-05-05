@@ -10,17 +10,18 @@ type User struct {
 	RegisterTime string
 	Ban          int
 	Message      GormIntList
-	Posts        []int
+	Posts        []Post
 }
 
 const (
 	Admin int = iota
 	Login
 	PublishSeekHelp //发表求助
-	EditSeekHelp    //编辑求助
+	ModifySeekHelp  //编辑求助
 	PublishLendHand //发表帮助
-	EditLendHand    //编辑帮助
+	ModifyLendHand  //编辑帮助
 	PublishComment
+	ModifyComment
 )
 
 func JudgePermit(option, ban int) bool {

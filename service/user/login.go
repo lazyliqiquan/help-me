@@ -1,10 +1,10 @@
 package user
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/lazyliqiquan/help-me/middlewares"
 	"github.com/lazyliqiquan/help-me/models"
-	"github.com/lazyliqiquan/help-me/service"
 	"github.com/lazyliqiquan/help-me/utils"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -14,6 +14,7 @@ import (
 // Login
 // @Tags 公共方法
 // @Summary 用户登录
+// @Accept multipart/form-data
 // @Param loginType formData string true "loginType"
 // @Param nameOrMail formData string true "nameOrMail"
 // @Param authCode formData string true "authCode"
@@ -48,7 +49,7 @@ func Login(c *gin.Context) {
 				})
 				return
 			}
-			service.Logger.Errorln(err)
+			utils.Logger.Errorln(err)
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "Mysql operation failure",
@@ -58,7 +59,7 @@ func Login(c *gin.Context) {
 	} else {
 		sysCode, err := models.RDB.Get(c, nameOrMail).Result()
 		if err != nil {
-			if err == redis.Nil {
+			if errors.Is(err, redis.Nil) {
 				c.JSON(http.StatusOK, gin.H{
 					"code": 1,
 					"msg":  "The mailbox does not exist or the verification code has expired",
@@ -81,7 +82,7 @@ func Login(c *gin.Context) {
 		err = models.DB.Model(&models.User{}).
 			Where("email = ?", nameOrMail).First(user).Error
 		if err != nil {
-			service.Logger.Errorln(err)
+			utils.Logger.Errorln(err)
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "Mailbox does not exist",
@@ -100,14 +101,14 @@ func Login(c *gin.Context) {
 	// 上面是局部鉴权，下面是全局鉴权
 	safeBan, err := models.RDB.Get(c, "safeBan").Result()
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Redis operation failed",
 		})
 		return
 	}
-	if safeBan != "permit" && !models.JudgePermit(models.Admin, user.Ban) {
+	if safeBan != utils.Permit && !models.JudgePermit(models.Admin, user.Ban) {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "The website is currently in secure mode, and only administrators can log in",
@@ -116,7 +117,7 @@ func Login(c *gin.Context) {
 	}
 	token, err := middlewares.GenerateToken(user.ID)
 	if err != nil {
-		service.Logger.Errorln(err)
+		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Generate token fail",
