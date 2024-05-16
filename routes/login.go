@@ -5,6 +5,7 @@ import (
 	"github.com/lazyliqiquan/help-me/middlewares"
 	"github.com/lazyliqiquan/help-me/middlewares/post/before"
 	"github.com/lazyliqiquan/help-me/service"
+	"github.com/lazyliqiquan/help-me/service/post"
 )
 
 // 需要完成登录才可访问
@@ -29,8 +30,8 @@ func login(r *gin.Engine) {
 	}
 	publishAuth := loginAuth.Group("/publish")
 	{
-		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.AddSeekHelp())
-		publishAuth.POST("/lend-hand", middlewares.Publish(middlewares.LendHandItem), before.AddLendHand())
+		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.AddSeekHelp(), post.AddPost)
+		publishAuth.POST("/lend-hand", middlewares.Publish(middlewares.LendHandItem), before.AddLendHand(), post.AddPost)
 		publishAuth.POST("/comment", middlewares.Publish(middlewares.CommentItem))
 	}
 
