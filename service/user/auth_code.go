@@ -25,7 +25,6 @@ func SendCode(c *gin.Context) {
 		})
 		return
 	}
-	// _, err := models.RDB.Get(c, email).Result()
 	ttlResult, err := models.RDB.TTL(c, email).Result()
 	if err != nil {
 		utils.Logger.Errorln(err)

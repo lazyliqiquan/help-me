@@ -42,7 +42,7 @@ func Login(c *gin.Context) {
 		err := models.DB.Model(&models.User{}).
 			Where(condition, nameOrMail, authCode).First(&user).Error
 		if err != nil {
-			if err == gorm.ErrRecordNotFound {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				c.JSON(http.StatusOK, gin.H{
 					"code": 1,
 					"msg":  "The user name does not exist or the password is incorrect",
@@ -131,7 +131,6 @@ func Login(c *gin.Context) {
 			"token":    token,
 			"name":     user.Name,
 			"password": user.Password,
-			"ban":      user.Ban, //前端根据用户权限，创建一些管理员特有的组件
 		},
 	})
 }

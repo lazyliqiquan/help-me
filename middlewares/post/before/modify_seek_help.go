@@ -36,7 +36,7 @@ func ModifySeekHelp() gin.HandlerFunc {
 		}
 		//fixme User表明默认加上 "s" ?
 		//好像必须要有id才能预加载成功
-		err = models.DB.Model(&models.Post{}).Preload("User").Where("id = ?", post.ID).Select("id", "ban", "lend_hand_sum").First(post).Error
+		err = models.DB.Model(&models.Post{}).Preload("Users").Where("id = ?", post.ID).Select("id", "ban", "lend_hand_sum").First(post).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) { //传递过来的seekHelpId不存在，用户输入的url有问题
 				c.JSON(http.StatusOK, gin.H{

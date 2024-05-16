@@ -1,16 +1,19 @@
 package models
 
 type User struct {
-	ID           int
-	Name         string
-	Email        string
-	Password     string
-	Avatar       string
-	Reward       int
-	RegisterTime string
-	Ban          int
-	Message      GormIntList
-	Posts        []Post
+	ID              int
+	Name            string
+	Avatar          string
+	Reward          int
+	Ban             int
+	Email           string
+	Password        string
+	RegisterTime    string
+	CommentSurplus  int    //评论剩余次数
+	LatePublishDate string //最近一次发布的时间
+	Message         GormIntList
+	Collect         GormIntList
+	Private         []Post
 }
 
 const (

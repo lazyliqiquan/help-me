@@ -69,9 +69,9 @@ func (c *WebConfig) RedisInit() map[string]any {
 	res["smtpServerPort"] = c.SmtpServerPort
 	res["smtpServerVerification"] = c.SmtpServerVerification
 	// 网站配置
-	res["tokenDuration"] = c.TokenDuration
-	res["verificationCodeDuration"] = c.VerificationCodeDuration
-	res["userInitScore"] = c.UserInitReward
+	//res["tokenDuration"] = c.TokenDuration
+	//res["verificationCodeDuration"] = c.VerificationCodeDuration
+	//res["userInitScore"] = c.UserInitReward
 	res["maxDocumentHeight"] = c.MaxDocumentHeight
 	res["maxDocumentLength"] = c.MaxDocumentLength
 	res["maxPictureSize"] = c.MaxPictureSize
