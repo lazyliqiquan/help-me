@@ -7,6 +7,7 @@ import (
 	"github.com/lazyliqiquan/help-me/utils"
 	"net/http"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -24,7 +25,7 @@ func Common(isAdd bool) gin.HandlerFunc {
 		document := c.PostForm("document")
 		imageNumStr := c.PostForm("imageNum")
 		tags := c.PostForm("tags")
-		if utils.IsNuiStrs(title, language, document, imageNumStr) || (isAdd && (createTime == "" || postType == "")) || (!isAdd && updateTime == "") {
+		if utils.IsNuiStrs(postType, title, language, document, imageNumStr) || (isAdd && createTime == "") || (!isAdd && updateTime == "") {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "Missing parameter",
@@ -102,6 +103,44 @@ func Common(isAdd bool) gin.HandlerFunc {
 				}
 			}
 		}(codeFilePath)
+		//如果是帮助帖子，还需要和求助帖子比较
+		if postType == "1" {
+			seekHelpPost := &models.Post{}
+			seekHelpId := c.GetInt("seekHelpId")
+			err := models.DB.Model(&models.Post{ID: seekHelpId}).Preload("PostStats").First(seekHelpPost).Error
+			if err != nil {
+				utils.Logger.Errorln(err)
+				c.JSON(http.StatusOK, gin.H{
+					"code": 1,
+					"msg":  "Mysql error",
+				})
+				return
+			}
+			//求助帖子和帮助帖子是同一种语言才有比较的意义
+			if seekHelpPost.Language == language {
+				pathList := strings.Split(codeFilePath, "/")
+				pathList[len(pathList)-1] = "diff_" + pathList[len(pathList)-1]
+				diffFilePath := strings.Join(pathList, "/")
+				cmd := exec.Command("sh", "-c", "diff -U 9999 "+seekHelpPost.PostStats.CodePath+" "+codeFilePath+" > "+diffFilePath)
+				// 这里是同步，有点耗时间，可以考虑Start和Wait的异步结合
+				// 虽然报错exit status 1，但是结果还是好的，所以感觉不用管这里的报错
+				cmd.Run()
+				defer func(originFile, diffFile string) {
+					//不存在就返回默认值，即false
+					win := c.GetBool("win")
+					if !win {
+						if err := os.Remove(diffFile); err != nil {
+							utils.Logger.Errorln(err)
+						}
+					} else {
+						if err := os.Remove(originFile); err != nil {
+							utils.Logger.Errorln(err)
+						}
+					}
+				}(codeFilePath, diffFilePath)
+				codeFilePath = diffFilePath
+			}
+		}
 		newPost := &models.Post{
 			Title:      title,
 			CreateTime: createTime,
@@ -114,15 +153,13 @@ func Common(isAdd bool) gin.HandlerFunc {
 				ImagePath:  imageFilesPath,
 			},
 		}
-		if isAdd {
-			c.Set("postType", postType)
-			if postType == "0" {
-				selectReward := c.GetInt("selectReward")
-				newPost.Reward = selectReward
-			}
+		if isAdd && postType == "0" {
+			selectReward := c.GetInt("selectReward")
+			newPost.Reward = selectReward
 		}
+		c.Set("postType", postType)
 		c.Set("newPost", newPost)
-		//调用c.Next()，还是会回到这里的，所以调用c.Next()的时候，不会执行defer，也就是不会删除文件
+		//fixme 调用c.Next()，还是会回到这里的，所以调用c.Next()的时候，不会执行defer，也就是不会删除文件
 		c.Next()
 	}
 }

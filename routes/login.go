@@ -17,9 +17,10 @@ func login(r *gin.Engine) {
 	}
 	viewAuth := safeAuth.Group("/view")
 	{
-		viewAuth.POST("/seek-help", middlewares.View(middlewares.SeekHelpItem))
-		viewAuth.POST("/lend-hand", middlewares.View(middlewares.LendHandItem))
+		viewAuth.POST("/seek-help", middlewares.View(middlewares.SeekHelpItem), post.ViewPost)
+		viewAuth.POST("/lend-hand", middlewares.View(middlewares.LendHandItem), post.ViewPost)
 		viewAuth.POST("/comment", middlewares.View(middlewares.CommentItem))
+		viewAuth.POST("/post-list", post.GetPostList)
 	}
 	loginAuth := safeAuth.Group("/", middlewares.LoginModel())
 	modifyAuth := loginAuth.Group("/modify")

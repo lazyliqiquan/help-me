@@ -30,7 +30,6 @@ func AddPost(c *gin.Context) {
 		})
 		return
 	}
-	//todo 如果是帮助帖子，那么上传的代码还需要和求助帖子的代码进行比较(前提是语言要一样，才有比较的意义)
 	err := models.DB.Transaction(func(tx *gorm.DB) error {
 		//创建之后，是会返回新创建的数据的id的吧
 		err := tx.Model(&models.Post{}).Create(newPost).Error

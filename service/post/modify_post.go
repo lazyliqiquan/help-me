@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"os"
-	"strconv"
 )
 
 // ModifyPost
@@ -16,7 +15,9 @@ import (
 // 求助特有：
 // 帮助特有：
 func ModifyPost(c *gin.Context) {
+	postType := c.GetString("postType")
 	_newPost, _ := c.Get("newPost")
+	postId := c.GetInt("seekHelpId")
 	newPost, ok := _newPost.(*models.Post)
 	if !ok {
 		utils.Logger.Errorln("assertion fail")
@@ -26,18 +27,13 @@ func ModifyPost(c *gin.Context) {
 		})
 		return
 	}
-	postId, err := strconv.Atoi(c.PostForm("postId"))
-	if err != nil {
-		utils.Logger.Errorln(err)
-		c.JSON(http.StatusOK, gin.H{
-			"code": 1,
-			"msg":  "Post id parse error",
-		})
-		return
+	if postType == "1" {
+		postId = c.GetInt("lendHandId")
 	}
 	oldPost := &models.Post{}
 	//先更新，再删除旧的文件
-	err = models.DB.Transaction(func(tx *gorm.DB) error {
+	err := models.DB.Transaction(func(tx *gorm.DB) error {
+		//fixme 这里的预加载应该不需要夹's'了吧
 		err := models.DB.Model(&models.Post{ID: postId}).Preload("PostStats").First(oldPost).Error
 		if err != nil {
 			return err
