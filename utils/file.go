@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-// 读取文件为[]byte类型
+// ReadFile 读取文件为[]byte类型
 func ReadFile(filePath string) ([]byte, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -17,8 +17,15 @@ func ReadFile(filePath string) ([]byte, error) {
 	return io.ReadAll(file)
 }
 
-// 保存一个文件
+// SaveAFile 保存一个文件
 func SaveAFile(savePath string, file multipart.File) error {
+	// 这里关闭的文件应该不总是最后一个吧(如果程序内存溢出可以考虑文件是否及时关闭)
+	defer func() {
+		err := file.Close()
+		if err != nil {
+			Logger.Errorln(err)
+		}
+	}()
 	out, err := os.Create(savePath)
 	if err != nil {
 		return err

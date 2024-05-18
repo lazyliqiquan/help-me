@@ -24,14 +24,14 @@ func login(r *gin.Engine) {
 	loginAuth := safeAuth.Group("/", middlewares.LoginModel())
 	modifyAuth := loginAuth.Group("/modify")
 	{
-		modifyAuth.POST("/seek-help", middlewares.Modify(middlewares.SeekHelpItem), before.ModifySeekHelp())
-		modifyAuth.POST("/lend-hand", middlewares.Modify(middlewares.LendHandItem), before.ModifyLendHand())
+		modifyAuth.POST("/seek-help", middlewares.Modify(middlewares.SeekHelpItem), before.ModifySeekHelp(), before.Common(false), post.ModifyPost)
+		modifyAuth.POST("/lend-hand", middlewares.Modify(middlewares.LendHandItem), before.ModifyLendHand(), before.Common(false), post.ModifyPost)
 		modifyAuth.POST("/comment", middlewares.Modify(middlewares.CommentItem))
 	}
 	publishAuth := loginAuth.Group("/publish")
 	{
-		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.AddSeekHelp(), post.AddPost)
-		publishAuth.POST("/lend-hand", middlewares.Publish(middlewares.LendHandItem), before.AddLendHand(), post.AddPost)
+		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.AddSeekHelp(), before.Common(true), post.AddPost)
+		publishAuth.POST("/lend-hand", middlewares.Publish(middlewares.LendHandItem), before.AddLendHand(), before.Common(true), post.AddPost)
 		publishAuth.POST("/comment", middlewares.Publish(middlewares.CommentItem))
 	}
 
