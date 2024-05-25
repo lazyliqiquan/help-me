@@ -10,7 +10,6 @@ import (
 )
 
 // ListParam 因为请求的参数有点多，所以这里将请求的参数解析到准备好的结构体中
-// fixme 结构体名称需要大写吗？
 type ListParam struct {
 	//请求类型:私人的求助列表、私人帮助列表、收藏求助列表、收藏帮助列表总共有六种情况
 	ListType int `form:"listType"`
@@ -123,16 +122,19 @@ func LogoutPostList(c *gin.Context) {
 	//判断一下帖子是否可以浏览
 	userId := c.GetInt("id")
 	userBan := c.GetInt("ban")
-	for i, v := range postList {
-		if userId == 0 && models.JudgePermit(models.View) { //未登录
-
+	sortList := make([]models.Post, 0)
+	for _, v := range postList {
+		//如果该帖子被封禁，且请求者不是管理员或者帖子所有者，则无法查看
+		if !models.JudgePermit(models.View, v.Ban) && (userId == 0 || !models.JudgePermit(models.Admin, userBan) || v.UserID != userId) { //未登录
+			continue
 		}
+		sortList = append(sortList, v)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "Get logout post list successfully",
-		"data": gin.H{"total": 0, "list": postList},
+		"data": gin.H{"total": total, "list": sortList},
 	})
 }
 
