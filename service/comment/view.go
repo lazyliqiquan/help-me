@@ -37,20 +37,31 @@ func View(c *gin.Context) {
 		})
 		return
 	}
+	userId := c.GetInt("id")
+	userBan := c.GetInt("ban")
 	var total int64
 	post := &models.Post{}
 	err := models.DB.Model(&models.Post{ID: requestComment.PostId}).
 		Preload("Comments", func(db *gorm.DB) *gorm.DB {
 			//fixme 这里可以圈套吗
-			return db.Count(&total).Preload("User", func(db2 *gorm.DB) *gorm.DB {
-				return db2.Select("id", "avatar")
+			//如果是管理员，那么全部评论都可以看到，包括之前被封禁的
+			return db.Where("ban = ? Or ban = ?", false, userId != 0 && models.JudgePermit(models.Admin, userBan)).
+				Count(&total).Preload("User", func(db2 *gorm.DB) *gorm.DB {
+				return db2.Select("id", "name", "avatar")
 			}).Offset((requestComment.Page - 1) * requestComment.PageSize).Limit(requestComment.PageSize)
-		}).Select("id").First(&post).Error
+		}).Select("id", "ban").First(&post).Error
 	if err != nil {
 		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
 			"msg":  "Mysql error",
+		})
+		return
+	}
+	if !models.JudgePermit(models.ViewComment, post.Ban) && (userId == 0 || !models.JudgePermit(models.Admin, userBan)) {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"msg":  "Comments on this post are blocked and you do not have permission to view it",
 		})
 		return
 	}

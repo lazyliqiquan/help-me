@@ -44,6 +44,18 @@ func AddPost(c *gin.Context) {
 			//减去对应的悬赏
 			err = tx.Model(&models.User{ID: userId}).Update("reward", reward-selectReward).Error
 		} else {
+			tempPost := &models.Post{}
+			err = tx.Model(&models.Post{ID: seekHelpId}).Preload("Users", func(db *gorm.DB) *gorm.DB {
+				return db.Select("id", "message")
+			}).First(tempPost).Error
+			if err != nil {
+				return err
+			}
+			tempPost.User.Message = append(tempPost.User.Message, newPost.ID)
+			err = tx.Model(&models.User{ID: tempPost.User.ID}).Update("message", tempPost.User.Message).Error
+			if err != nil {
+				return err
+			}
 			//将帮助帖子添加到对应的求助帖子的帮助列表下
 			err = tx.Model(&models.Post{ID: seekHelpId}).Association("LendHands").Append(&models.Post{ID: newPost.ID})
 		}

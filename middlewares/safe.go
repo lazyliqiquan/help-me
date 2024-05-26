@@ -106,3 +106,18 @@ func LoginModel() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+// AdminModel 判断是否是管理员
+func AdminModel() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userBan := c.GetInt("ban")
+		if !models.JudgePermit(models.Admin, userBan) {
+			c.JSON(http.StatusOK, gin.H{
+				"code": 1,
+				"msg":  "You are not an administrator and do not have operation rights",
+			})
+			c.Abort()
+		}
+		c.Next()
+	}
+}
