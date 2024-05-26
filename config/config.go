@@ -15,15 +15,11 @@ type WebConfig struct {
 	SmtpServerPort         string `yaml:"smtpServerPort"`
 	SmtpServerVerification string `yaml:"smtpServerVerification"`
 	// 网站配置
-	TokenDuration            int `yaml:"tokenDuration"`
-	VerificationCodeDuration int `yaml:"verificationCodeDuration"`
-	UserInitReward           int `yaml:"userInitReward"`
-	MaxDocumentHeight        int `yaml:"maxDocumentHeight"`
-	MaxDocumentLength        int `yaml:"maxDocumentLength"`
-	MaxPictureSize           int `yaml:"maxPictureSize"`
-	MaxCodeFileSize          int `yaml:"maxCodeFileSize"`
-	DayUserCommentLimit      int `yaml:"dayUserCommentLimit"`
-	TodayShareCodeSurplus    int `yaml:"todayShareCodeSurplus"`
+	MaxDocumentHeight   int `yaml:"maxDocumentHeight"`
+	MaxDocumentLength   int `yaml:"maxDocumentLength"`
+	MaxPictureSize      int `yaml:"maxPictureSize"`
+	MaxCodeFileSize     int `yaml:"maxCodeFileSize"`
+	DayUserCommentLimit int `yaml:"dayUserCommentLimit"`
 	//权限配置
 	SafeBan              string `yaml:"safeBan"`
 	PublishSeekHelpBan   string `yaml:"publishSeekHelpBan"`
@@ -39,18 +35,21 @@ type WebConfig struct {
 	LoginViewCommentBan  string `yaml:"loginViewCommentBan"`
 	ModifyCommentBan     string `yaml:"modifyCommentBan"`
 	// 不应该修改的配置
-	MysqlPassword      string `yaml:"mysqlPassword"`
-	WebPath            string `yaml:"webPath"`
-	MysqlPath          string `yaml:"mysqlPath"`
-	MysqlPort          string `yaml:"mysqlPort"`
-	RedisPath          string `yaml:"redisPath"`
-	RedisPort          string `yaml:"redisPort"`
-	RootFilePath       string `yaml:"rootFilePath"`
-	CodeFilePath       string `yaml:"codeFilePath"`
-	ImageFilePath      string `yaml:"imageFilePath"`
-	AvatarFilePath     string `yaml:"avatarFilePath"`
-	MaxIdleConnects    int    `yaml:"maxIdleConnects"`
-	MaxMultipartMemory int    `yaml:"maxMultipartMemory"`
+	TokenDuration            int    `yaml:"tokenDuration"`
+	VerificationCodeDuration int    `yaml:"verificationCodeDuration"`
+	UserInitReward           int    `yaml:"userInitReward"`
+	MysqlPassword            string `yaml:"mysqlPassword"`
+	WebPath                  string `yaml:"webPath"`
+	MysqlPath                string `yaml:"mysqlPath"`
+	MysqlPort                string `yaml:"mysqlPort"`
+	RedisPath                string `yaml:"redisPath"`
+	RedisPort                string `yaml:"redisPort"`
+	RootFilePath             string `yaml:"rootFilePath"`
+	CodeFilePath             string `yaml:"codeFilePath"`
+	ImageFilePath            string `yaml:"imageFilePath"`
+	AvatarFilePath           string `yaml:"avatarFilePath"`
+	MaxIdleConnects          int    `yaml:"maxIdleConnects"`
+	MaxMultipartMemory       int    `yaml:"maxMultipartMemory"`
 	// 是否处于debug
 	Debug bool
 	// debug
@@ -69,15 +68,11 @@ func (c *WebConfig) RedisInit() map[string]any {
 	res["smtpServerPort"] = c.SmtpServerPort
 	res["smtpServerVerification"] = c.SmtpServerVerification
 	// 网站配置
-	//res["tokenDuration"] = c.TokenDuration
-	//res["verificationCodeDuration"] = c.VerificationCodeDuration
-	//res["userInitScore"] = c.UserInitReward
 	res["maxDocumentHeight"] = c.MaxDocumentHeight
 	res["maxDocumentLength"] = c.MaxDocumentLength
 	res["maxPictureSize"] = c.MaxPictureSize
 	res["maxCodeFileSize"] = c.MaxCodeFileSize
 	res["dayUserCommentLimit"] = c.DayUserCommentLimit
-	res["todayShareCodeSurplus"] = c.TodayShareCodeSurplus
 	// 权限配置
 	res["safeBan"] = c.SafeBan
 	res["publishSeekHelpBan"] = c.PublishSeekHelpBan

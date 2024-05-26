@@ -5,6 +5,7 @@ import (
 	"github.com/lazyliqiquan/help-me/middlewares"
 	"github.com/lazyliqiquan/help-me/middlewares/post/before"
 	"github.com/lazyliqiquan/help-me/service"
+	"github.com/lazyliqiquan/help-me/service/comment"
 	"github.com/lazyliqiquan/help-me/service/post"
 )
 
@@ -15,25 +16,27 @@ func login(r *gin.Engine) {
 	{
 		safeAuth.POST("/download-file", service.DownloadFile)
 	}
+	safeAuth.POST("/logout-post-list", post.LogoutPostList)
 	viewAuth := safeAuth.Group("/view")
 	{
 		viewAuth.POST("/seek-help", middlewares.View(middlewares.SeekHelpItem), post.ViewPost)
 		viewAuth.POST("/lend-hand", middlewares.View(middlewares.LendHandItem), post.ViewPost)
 		viewAuth.POST("/comment", middlewares.View(middlewares.CommentItem))
-		viewAuth.POST("/post-list", post.GetPostList)
 	}
 	loginAuth := safeAuth.Group("/", middlewares.LoginModel())
+	loginAuth.POST("/private-post-list", post.PrivatePostList)
+	loginAuth.POST("/collect-post-list", post.CollectPostList)
 	modifyAuth := loginAuth.Group("/modify")
 	{
 		modifyAuth.POST("/seek-help", middlewares.Modify(middlewares.SeekHelpItem), before.ModifySeekHelp(), before.Common(false), post.ModifyPost)
 		modifyAuth.POST("/lend-hand", middlewares.Modify(middlewares.LendHandItem), before.ModifyLendHand(), before.Common(false), post.ModifyPost)
-		modifyAuth.POST("/comment", middlewares.Modify(middlewares.CommentItem))
+		modifyAuth.POST("/comment", middlewares.Modify(middlewares.CommentItem), comment.Modify)
 	}
 	publishAuth := loginAuth.Group("/publish")
 	{
 		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.AddSeekHelp(), before.Common(true), post.AddPost)
 		publishAuth.POST("/lend-hand", middlewares.Publish(middlewares.LendHandItem), before.AddLendHand(), before.Common(true), post.AddPost)
-		publishAuth.POST("/comment", middlewares.Publish(middlewares.CommentItem))
+		publishAuth.POST("/comment", middlewares.Publish(middlewares.CommentItem), comment.Add)
 	}
 
 }

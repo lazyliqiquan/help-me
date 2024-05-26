@@ -45,7 +45,7 @@ func Init(config *config.WebConfig) {
 	if err != nil {
 		utils.RootLogger.Fatal("Unable to use the database help_me : ", zap.Error(err))
 	}
-	err = DB.AutoMigrate(&User{}, &UserInfo{}, &Post{}, &PostStats{}, &Comment{})
+	err = DB.AutoMigrate(&User{}, &Post{}, &PostStats{}, &Comment{})
 	if err != nil {
 		utils.RootLogger.Fatal("Create tables fail : ", zap.Error(err))
 	}
