@@ -59,21 +59,19 @@ func Init(config *config.WebConfig) {
 		Addr:     redisDsn,
 		Password: "",
 	})
-	WebGlobalParams := config.RedisInit()
-	for k, v := range WebGlobalParams {
-		if _, ok := v.(string); ok {
-			if err := RDB.Set(context.Background(), k, v.(string), time.Duration(0)).Err(); err != nil {
-				utils.RootLogger.Fatal("Set web global config fail : ", zap.Error(err))
-			}
-		} else {
-			if err := RDB.Set(context.Background(), k, v.(int), time.Duration(0)).Err(); err != nil {
-				utils.RootLogger.Fatal("Set web global config fail : ", zap.Error(err))
-			}
+	for k, v := range config.GetRestrictionSetting() {
+		if err := RDB.Set(context.Background(), k, v, time.Duration(0)).Err(); err != nil {
+			utils.RootLogger.Fatal("Set website setting fail : ", zap.Error(err))
 		}
 	}
+	for k, v := range config.GetPermissionSetting() {
+		if err := RDB.Set(context.Background(), k, v, time.Duration(0)).Err(); err != nil {
+			utils.RootLogger.Fatal("Set permission setting fail : ", zap.Error(err))
+		}
+	}
+	utils.Logger.Infoln("Help-me redis init succeed !")
 	// 启动一个协程来每天重置网站配置
 	//go webTicker()
-	utils.Logger.Infoln("Help-me redis init succeed !")
 }
 
 func webTicker() {

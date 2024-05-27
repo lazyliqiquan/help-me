@@ -45,7 +45,7 @@ func Add(c *gin.Context) {
 	}
 	userId := c.GetInt("id")
 	post := &models.Post{}
-	err := models.DB.Model(&models.Post{ID: newComment.Id}).Select("id", "ban").First(post).Error
+	err := models.DB.Model(&models.Post{ID: newComment.Id}).Select("id", "ban", "comment_sum").First(post).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 1,
@@ -126,7 +126,14 @@ func Add(c *gin.Context) {
 		PostID: newComment.Id,
 		UserID: userId,
 	}
-	err = models.DB.Model(&models.Comment{}).Create(comment).Error
+	err = models.DB.Transaction(func(tx *gorm.DB) error {
+		err = tx.Model(&models.Comment{}).Create(comment).Error
+		if err != nil {
+			return err
+		}
+		return tx.Model(&models.Post{ID: newComment.Id}).Update("comment_sum", post.CommentSum+1).
+			Association("Comments").Append(&models.Comment{ID: comment.ID})
+	})
 	if err != nil {
 		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{

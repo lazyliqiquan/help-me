@@ -57,6 +57,15 @@ func AddPost(c *gin.Context) {
 				return err
 			}
 			//将帮助帖子添加到对应的求助帖子的帮助列表下
+			var lendHandSum int
+			err = tx.Model(&models.Post{ID: seekHelpId}).Select("lend_hand_sum").Scan(&lendHandSum).Error
+			if err != nil {
+				return err
+			}
+			err = tx.Model(&models.Post{ID: seekHelpId}).Update("lend_hand_sum", lendHandSum+1).Error
+			if err != nil {
+				return err
+			}
 			err = tx.Model(&models.Post{ID: seekHelpId}).Association("LendHands").Append(&models.Post{ID: newPost.ID})
 		}
 		return err

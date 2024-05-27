@@ -60,34 +60,34 @@ type WebConfig struct {
 	DebugRedisPort string `yaml:"debugRedisPort"`
 }
 
-func (c *WebConfig) RedisInit() map[string]any {
-	res := make(map[string]any)
-	// 系统配置
-	res["senderMailbox"] = c.SenderMailbox
-	res["smtpServerPath"] = c.SmtpServerPath
-	res["smtpServerPort"] = c.SmtpServerPort
-	res["smtpServerVerification"] = c.SmtpServerVerification
+func (c *WebConfig) GetRestrictionSetting() map[string]int {
+	restriction := make(map[string]int)
 	// 网站配置
-	res["maxDocumentHeight"] = c.MaxDocumentHeight
-	res["maxDocumentLength"] = c.MaxDocumentLength
-	res["maxPictureSize"] = c.MaxPictureSize
-	res["maxCodeFileSize"] = c.MaxCodeFileSize
-	res["dayUserCommentLimit"] = c.DayUserCommentLimit
+	restriction["maxDocumentHeight"] = c.MaxDocumentHeight
+	restriction["maxDocumentLength"] = c.MaxDocumentLength
+	restriction["maxPictureSize"] = c.MaxPictureSize
+	restriction["maxCodeFileSize"] = c.MaxCodeFileSize
+	restriction["dayUserCommentLimit"] = c.DayUserCommentLimit
+	return restriction
+}
+
+func (c *WebConfig) GetPermissionSetting() map[string]string {
+	permissionSetting := make(map[string]string)
 	// 权限配置
-	res["safeBan"] = c.SafeBan
-	res["publishSeekHelpBan"] = c.PublishSeekHelpBan
-	res["viewSeekHelpBan"] = c.ViewSeekHelpBan
-	res["loginViewSeekHelpBan"] = c.LoginViewSeekHelpBan
-	res["modifySeekHelpBan"] = c.ModifySeekHelpBan
-	res["publishLendHandBan"] = c.PublishLendHandBan
-	res["viewLendHandBan"] = c.ViewLendHandBan
-	res["loginViewLendHandBan"] = c.LoginViewLendHandBan
-	res["modifyLendHandBan"] = c.ModifyLendHandBan
-	res["publishCommentBan"] = c.PublishCommentBan
-	res["viewCommentBan"] = c.ViewCommentBan
-	res["loginViewCommentBan"] = c.LoginViewCommentBan
-	res["modifyCommentBan"] = c.ModifyCommentBan
-	return res
+	permissionSetting["safeBan"] = c.SafeBan
+	permissionSetting["publishSeekHelpBan"] = c.PublishSeekHelpBan
+	permissionSetting["viewSeekHelpBan"] = c.ViewSeekHelpBan
+	permissionSetting["loginViewSeekHelpBan"] = c.LoginViewSeekHelpBan
+	permissionSetting["modifySeekHelpBan"] = c.ModifySeekHelpBan
+	permissionSetting["publishLendHandBan"] = c.PublishLendHandBan
+	permissionSetting["viewLendHandBan"] = c.ViewLendHandBan
+	permissionSetting["loginViewLendHandBan"] = c.LoginViewLendHandBan
+	permissionSetting["modifyLendHandBan"] = c.ModifyLendHandBan
+	permissionSetting["publishCommentBan"] = c.PublishCommentBan
+	permissionSetting["viewCommentBan"] = c.ViewCommentBan
+	permissionSetting["loginViewCommentBan"] = c.LoginViewCommentBan
+	permissionSetting["modifyCommentBan"] = c.ModifyCommentBan
+	return permissionSetting
 }
 
 var Config *WebConfig

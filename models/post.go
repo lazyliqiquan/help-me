@@ -4,13 +4,14 @@ type Post struct {
 	ID          int
 	Title       string
 	CreateTime  string
-	Reward      int
+	Reward      int //可以通过是否大于0来判断是求助帖子还是帮助帖子
 	Language    string
 	LikeSum     int
-	LendHandSum int //可以通过该成员来判断是seekHelp(>=0)还是lendHand(-1)
+	LendHandSum int
 	CommentSum  int
 	Status      bool
 	Tags        GormStrList
+	Likes       GormIntList //存放的是点赞的用户id
 	Ban         int
 	UserID      int
 	User        User

@@ -4,9 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lazyliqiquan/help-me/middlewares"
 	"github.com/lazyliqiquan/help-me/middlewares/post/before"
-	"github.com/lazyliqiquan/help-me/service"
+	"github.com/lazyliqiquan/help-me/service/click"
 	"github.com/lazyliqiquan/help-me/service/comment"
+	"github.com/lazyliqiquan/help-me/service/other"
 	"github.com/lazyliqiquan/help-me/service/post"
+	"github.com/lazyliqiquan/help-me/service/setting"
 	"github.com/lazyliqiquan/help-me/service/user"
 )
 
@@ -15,7 +17,7 @@ func login(r *gin.Engine) {
 	//在安全模式下，仅管理员可操作
 	safeAuth := r.Group("/", middlewares.TokenSafeModel())
 	{
-		safeAuth.POST("/download-file", service.DownloadFile)
+		safeAuth.POST("/download-file", other.DownloadFile)
 		safeAuth.POST("/logout-post-list", post.LogoutPostList)
 	}
 	viewAuth := safeAuth.Group("/view")
@@ -29,6 +31,11 @@ func login(r *gin.Engine) {
 		loginAuth.POST("/private-post-list", post.PrivatePostList)
 		loginAuth.POST("/collect-post-list", post.CollectPostList)
 		loginAuth.POST("/update-collect", post.UpdateCollect)
+		loginAuth.POST("/adopt-help", click.AdoptHelp)
+		loginAuth.POST("/upvote", click.Upvote)
+		loginAuth.POST("/mark-single-info", click.MarkSingleInfo)
+		loginAuth.POST("/mark-all-info", click.MarkAllInfo)
+		loginAuth.POST("/message-list", post.MessageList)
 	}
 	modifyAuth := loginAuth.Group("/modify")
 	{
@@ -47,5 +54,9 @@ func login(r *gin.Engine) {
 		adminAuth.POST("/forbid-one-comment", comment.ForbidOneComment)
 		adminAuth.POST("/forbid-post", post.ForbidPost)
 		adminAuth.POST("/forbid-user", user.ForbidUser)
+		adminAuth.POST("/modify-permission", setting.ModifyPermission)
+		adminAuth.POST("/view-permission", setting.ViewPermission)
+		adminAuth.POST("/modify-restriction", setting.ModifyRestriction)
+		adminAuth.POST("/view-restriction", setting.ViewRestriction)
 	}
 }
