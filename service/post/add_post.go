@@ -6,6 +6,7 @@ import (
 	"github.com/lazyliqiquan/help-me/utils"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 )
 
 // AddPost
@@ -18,8 +19,6 @@ func AddPost(c *gin.Context) {
 	userId := c.GetInt("id")
 	postType := c.GetString("postType")
 	seekHelpId := c.GetInt("seekHelpId")
-	selectReward := c.GetInt("selectReward")
-	reward := c.GetInt("reward")
 	_newPost, _ := c.Get("newPost")
 	newPost, ok := _newPost.(*models.Post)
 	if !ok {
@@ -30,7 +29,36 @@ func AddPost(c *gin.Context) {
 		})
 		return
 	}
-	err := models.DB.Transaction(func(tx *gorm.DB) error {
+	var selectReward, reward int
+	var err error
+	if postType == "0" {
+		if err := models.DB.Model(&models.User{}).Where("id = ?", userId).Select("reward").Scan(&reward).Error; err != nil {
+			utils.Logger.Errorln(err)
+			c.JSON(http.StatusOK, gin.H{
+				"code": 1,
+				"msg":  "Mysql operation failed",
+			})
+			return
+		}
+		selectReward, err = strconv.Atoi(c.PostForm("reward"))
+		if err != nil {
+			utils.Logger.Errorln(err)
+			c.JSON(http.StatusOK, gin.H{
+				"code": 1,
+				"msg":  "The reward parameter is not a legal integer",
+			})
+			return
+		}
+		if reward <= 0 || selectReward > reward || selectReward <= 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"code": 1,
+				"msg":  "Illegality reward",
+			})
+			return
+		}
+		newPost.Reward = selectReward
+	}
+	err = models.DB.Transaction(func(tx *gorm.DB) error {
 		//创建之后，是会返回新创建的数据的id的吧
 		err := tx.Model(&models.Post{}).Create(newPost).Error
 		if err != nil {
@@ -45,7 +73,7 @@ func AddPost(c *gin.Context) {
 			err = tx.Model(&models.User{ID: userId}).Update("reward", reward-selectReward).Error
 		} else {
 			tempPost := &models.Post{}
-			err = tx.Model(&models.Post{ID: seekHelpId}).Preload("Users", func(db *gorm.DB) *gorm.DB {
+			err = tx.Model(&models.Post{ID: seekHelpId}).Preload("User", func(db *gorm.DB) *gorm.DB {
 				return db.Select("id", "message")
 			}).First(tempPost).Error
 			if err != nil {

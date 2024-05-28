@@ -58,8 +58,7 @@ func ModifyLendHand() gin.HandlerFunc {
 			c.Abort()
 		}
 		post := &models.Post{}
-		//fixme 这里到底是 User 还是 Users
-		err = models.DB.Model(&models.Post{}).Preload("Users").Where("id = ?", lendHandId).Select("id", "ban", "status").First(post).Error
+		err = models.DB.Model(&models.Post{}).Preload("User").Where("id = ?", lendHandId).Select("id", "ban", "status").First(post).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				c.JSON(http.StatusOK, gin.H{

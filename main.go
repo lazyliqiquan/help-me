@@ -19,10 +19,12 @@ func main() {
 	initFiles(config.Config)
 	models.Init(config.Config)
 	r := routes.Router(config.Config)
+	webPath := config.Config.WebPath
 	if config.Config.Debug {
-		r.Run(config.Config.DebugWebPath)
-	} else {
-		r.Run(config.Config.WebPath)
+		webPath = config.Config.DebugWebPath
+	}
+	if err := r.Run(webPath); err != nil {
+		utils.RootLogger.Fatal("Router run fail : ", zap.Error(err))
 	}
 }
 

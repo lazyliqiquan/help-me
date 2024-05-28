@@ -153,10 +153,6 @@ func Common(isAdd bool) gin.HandlerFunc {
 				ImagePath:  imageFilesPath,
 			},
 		}
-		if isAdd && postType == "0" {
-			selectReward := c.GetInt("selectReward")
-			newPost.Reward = selectReward
-		}
 		c.Set("postType", postType)
 		c.Set("newPost", newPost)
 		//fixme 调用c.Next()，还是会回到这里的，所以调用c.Next()的时候，不会执行defer，也就是不会删除文件

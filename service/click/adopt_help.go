@@ -19,8 +19,8 @@ type BothPostId struct {
 // @Summary 采纳帮助者的帖子
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param seekHelpId formData int true 1
-// @Param lendHandId formData int true 2
+// @Param seekHelpId formData int true "1"
+// @Param lendHandId formData int true "2"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /adopt-help [post]
 func AdoptHelp(c *gin.Context) {
@@ -34,7 +34,7 @@ func AdoptHelp(c *gin.Context) {
 		return
 	}
 	post := &models.Post{}
-	err := models.DB.Model(&models.Post{ID: bothPostId.LendHandId}).Preload("Users", func(db *gorm.DB) *gorm.DB {
+	err := models.DB.Model(&models.Post{ID: bothPostId.LendHandId}).Preload("User", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id", "reward", "message")
 	}).Select("id").First(post).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {

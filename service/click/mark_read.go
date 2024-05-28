@@ -14,7 +14,7 @@ import (
 // @Summary 将一条消息标记为已读
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param postId formData int true 1
+// @Param postId formData int true "1"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /mark-single-info [post]
 func MarkSingleInfo(c *gin.Context) {

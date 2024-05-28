@@ -14,7 +14,7 @@ type ListParam struct {
 	//1 求助列表、求助列表对应的帮助列表 | 0 求助列表 >0 求助帖子对应的帮助列表
 	//2 私人的求助列表、私人帮助列表 | 0 求助 other 帮助
 	//3 收藏求助列表、收藏帮助列表 | 0 求助 other 帮助
-	ListType int `form:"listType" binding:"required"`
+	ListType *int `form:"listType" binding:"required"`
 	//第几页，每页多少条
 	Page     int `form:"page" binding:"required"`
 	PageSize int `form:"pageSize" binding:"required"`
@@ -31,12 +31,12 @@ type ListParam struct {
 // @Tags 公共方法
 // @Summary 请求公共帖子列表
 // @Accept multipart/form-data
-// @Param listType formData int true 0
-// @Param page formData int true 1
-// @Param pageSize formData int true 20
-// @Param status formData int true 0
+// @Param listType formData int true "0"
+// @Param page formData int true "1"
+// @Param pageSize formData int true "20"
+// @Param status formData int true "0"
 // @Param language formData string true "All"
-// @Param sortOption formData int true 0
+// @Param sortOption formData int true "0"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /logout-post-list [post]
 func LogoutPostList(c *gin.Context) {
@@ -50,9 +50,9 @@ func LogoutPostList(c *gin.Context) {
 		return
 	}
 	tx := models.DB.Model(&models.Post{}).Session(&gorm.Session{})
-	if listParam.ListType > 0 {
+	if *listParam.ListType > 0 {
 		seekHelpPost := &models.Post{}
-		err := models.DB.Model(&models.Post{ID: listParam.ListType}).Preload("LendHands", func(db *gorm.DB) *gorm.DB {
+		err := models.DB.Model(&models.Post{ID: *listParam.ListType}).Preload("LendHands", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id")
 		}).First(&seekHelpPost).Error
 		if errors.Is(err, gorm.ErrRecordNotFound) { //seekHelpId不存在
@@ -108,7 +108,7 @@ func LogoutPostList(c *gin.Context) {
 	//先初始化，防止出现数组为nil的情况
 	postList := make([]models.Post, 0)
 	err := tx.Order(sortCondition+" DESC").Offset((listParam.Page-1)*listParam.PageSize).
-		Limit(listParam.PageSize).Preload("Users", func(db *gorm.DB) *gorm.DB {
+		Limit(listParam.PageSize).Preload("User", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id", "avatar")
 	}).
 		Find(&postList).Error
@@ -144,9 +144,9 @@ func LogoutPostList(c *gin.Context) {
 // @Summary 请求私人帖子列表
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param listType formData int true 0
-// @Param page formData int true 1
-// @Param pageSize formData int true 20
+// @Param listType formData int true "0"
+// @Param page formData int true "1"
+// @Param pageSize formData int true "20"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /private-post-list [post]
 func PrivatePostList(c *gin.Context) {
@@ -160,7 +160,7 @@ func PrivatePostList(c *gin.Context) {
 		return
 	}
 	condition := "reward = ?"
-	if listParam.ListType == 0 {
+	if *listParam.ListType == 0 {
 		condition = "reward > ?"
 	}
 	userId := c.GetInt("id")
@@ -193,9 +193,9 @@ func PrivatePostList(c *gin.Context) {
 // @Summary 请求收藏帖子列表
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param listType formData int true 0
-// @Param page formData int true 1
-// @Param pageSize formData int true 20
+// @Param listType formData int true "0"
+// @Param page formData int true "1"
+// @Param pageSize formData int true "20"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /collect-post-list [post]
 func CollectPostList(c *gin.Context) {
@@ -209,7 +209,7 @@ func CollectPostList(c *gin.Context) {
 		return
 	}
 	condition := "reward = ?"
-	if listParam.ListType == 0 {
+	if *listParam.ListType == 0 {
 		condition = "reward > ?"
 	}
 	userId := c.GetInt("id")
@@ -236,7 +236,7 @@ func CollectPostList(c *gin.Context) {
 	}
 	postList := make([]models.Post, 0)
 	err = tx.Offset((listParam.Page-1)*listParam.PageSize).Limit(listParam.PageSize).
-		Preload("Users", func(db *gorm.DB) *gorm.DB {
+		Preload("User", func(db *gorm.DB) *gorm.DB {
 
 			return db.Select("id", "avatar")
 		}).Find(&postList).Error

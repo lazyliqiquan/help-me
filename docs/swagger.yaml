@@ -1,6 +1,253 @@
 info:
   contact: {}
 paths:
+  /admin/forbid-one-comment:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: commentId
+        required: true
+        type: integer
+      - description: "false"
+        in: formData
+        name: ban
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 封禁某条评论
+      tags:
+      - 管理员方法
+  /admin/forbid-post:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      - description: "0"
+        in: formData
+        name: banOption
+        required: true
+        type: integer
+      - description: "false"
+        in: formData
+        name: isAdd
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 修改帖子权限
+      tags:
+      - 管理员方法
+  /admin/forbid-user:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: userId
+        required: true
+        type: integer
+      - description: "0"
+        in: formData
+        name: banOption
+        required: true
+        type: integer
+      - description: "false"
+        in: formData
+        name: isAdd
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 修改用户权限
+      tags:
+      - 管理员方法
+  /admin/modify-permission:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: safeBan
+        in: formData
+        name: option
+        required: true
+        type: string
+      - description: "false"
+        in: formData
+        name: ban
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 修改网站权限配置
+      tags:
+      - 管理员方法
+  /admin/modify-restriction:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: maxDocumentHeight
+        in: formData
+        name: option
+        required: true
+        type: string
+      - description: "6000"
+        in: formData
+        name: maxLimit
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 修改网站限制配置
+      tags:
+      - 管理员方法
+  /admin/view-permission:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 浏览网站权限配置
+      tags:
+      - 管理员方法
+  /admin/view-restriction:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 浏览网站限制配置
+      tags:
+      - 管理员方法
+  /adopt-help:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: seekHelpId
+        required: true
+        type: integer
+      - description: "2"
+        in: formData
+        name: lendHandId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 采纳帮助者的帖子
+      tags:
+      - 用户方法
+  /collect-post-list:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "0"
+        in: formData
+        name: listType
+        required: true
+        type: integer
+      - description: "1"
+        in: formData
+        name: page
+        required: true
+        type: integer
+      - description: "20"
+        in: formData
+        name: pageSize
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 请求收藏帖子列表
+      tags:
+      - 用户方法
   /download-file:
     post:
       consumes:
@@ -75,6 +322,207 @@ paths:
       summary: 用户登录
       tags:
       - 公共方法
+  /logout-post-list:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: "0"
+        in: formData
+        name: listType
+        required: true
+        type: integer
+      - description: "1"
+        in: formData
+        name: page
+        required: true
+        type: integer
+      - description: "20"
+        in: formData
+        name: pageSize
+        required: true
+        type: integer
+      - description: "0"
+        in: formData
+        name: status
+        required: true
+        type: integer
+      - description: All
+        in: formData
+        name: language
+        required: true
+        type: string
+      - description: "0"
+        in: formData
+        name: sortOption
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 请求公共帖子列表
+      tags:
+      - 公共方法
+  /mark-all-info:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 将所以消息标记为已读
+      tags:
+      - 用户方法
+  /mark-single-info:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 将一条消息标记为已读
+      tags:
+      - 用户方法
+  /message-list:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 消息列表
+      tags:
+      - 用户方法
+  /modify/comment:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      - description: Hello
+        in: formData
+        name: text
+        required: true
+        type: string
+      - description: "2024-05-26 15:10:00"
+        in: formData
+        name: updateTime
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 修改评论
+      tags:
+      - 用户方法
+  /private-post-list:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "0"
+        in: formData
+        name: listType
+        required: true
+        type: integer
+      - description: "1"
+        in: formData
+        name: page
+        required: true
+        type: integer
+      - description: "20"
+        in: formData
+        name: pageSize
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 请求私人帖子列表
+      tags:
+      - 用户方法
+  /publish/comment:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      - description: Hello
+        in: formData
+        name: text
+        required: true
+        type: string
+      - description: "2024-05-26 15:10:00"
+        in: formData
+        name: sendTime
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 添加新的评论
+      tags:
+      - 用户方法
   /register:
     post:
       consumes:
@@ -129,6 +577,108 @@ paths:
           schema:
             type: string
       summary: 发送验证码(一个验证码只能处理一个操作，用完就要删除)
+      tags:
+      - 公共方法
+  /update-collect:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      - description: "false"
+        in: formData
+        name: isAdd
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 修改用户收藏夹
+      tags:
+      - 用户方法
+  /upvote:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      - description: "false"
+        in: formData
+        name: isAdd
+        required: true
+        type: boolean
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 给某个帖子(求助或者帮助)点赞
+      tags:
+      - 用户方法
+  /view/comment:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      - description: "1"
+        in: formData
+        name: page
+        required: true
+        type: integer
+      - description: "20"
+        in: formData
+        name: pageSize
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 浏览帖子所对应的评论
+      tags:
+      - 公共方法
+  /view/seek-help:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 浏览求助帖子，但其实修改一下swagger的Router，也可以浏览帮助帖子
       tags:
       - 公共方法
 swagger: "2.0"

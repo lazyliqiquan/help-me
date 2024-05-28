@@ -9,8 +9,8 @@ import (
 )
 
 type LikeParam struct {
-	PostId int  `form:"postId" binding:"required"`
-	IsAdd  bool `form:"isAdd" binding:"required"`
+	PostId int   `form:"postId" binding:"required"`
+	IsAdd  *bool `form:"isAdd" binding:"required"`
 }
 
 // Upvote 给某个帖子(求助或者帮助)点赞
@@ -18,8 +18,8 @@ type LikeParam struct {
 // @Summary 给某个帖子(求助或者帮助)点赞
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param postId formData int true 1
-// @Param isAdd formData int true false
+// @Param postId formData int true "1"
+// @Param isAdd formData bool true "false"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /upvote [post]
 func Upvote(c *gin.Context) {
@@ -43,7 +43,7 @@ func Upvote(c *gin.Context) {
 			return err
 		}
 		userId := c.GetInt("id")
-		if likeParam.IsAdd {
+		if *likeParam.IsAdd {
 			result.Likes = append(result.Likes, userId)
 			result.LikeSum++
 		} else {
@@ -74,7 +74,7 @@ func Upvote(c *gin.Context) {
 		return
 	}
 	msg := "Unlike successful"
-	if likeParam.IsAdd {
+	if *likeParam.IsAdd {
 		msg = "Upvote successful"
 	}
 	c.JSON(http.StatusOK, gin.H{

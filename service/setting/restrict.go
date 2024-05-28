@@ -20,7 +20,7 @@ type RestrictionParam struct {
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
 // @Param option formData string true "maxDocumentHeight"
-// @Param maxLimit formData int true 6000
+// @Param maxLimit formData int true "6000"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /admin/modify-restriction [post]
 func ModifyRestriction(c *gin.Context) {

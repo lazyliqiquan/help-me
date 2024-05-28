@@ -13,7 +13,7 @@ type PermissionParam struct {
 	//修改权限类型
 	Option string `form:"option" binding:"required"`
 	//true 表示允许 false 表示不允许
-	Ban bool `form:"ban" binding:"required"`
+	Ban *bool `form:"ban" binding:"required"`
 }
 
 // ModifyPermission 修改网站权限配置
@@ -22,7 +22,7 @@ type PermissionParam struct {
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
 // @Param option formData string true "safeBan"
-// @Param ban formData bool true false
+// @Param ban formData bool true "false"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /admin/modify-permission [post]
 func ModifyPermission(c *gin.Context) {
@@ -36,7 +36,7 @@ func ModifyPermission(c *gin.Context) {
 		return
 	}
 	v := utils.Permit
-	if !permissionParam.Ban {
+	if !*permissionParam.Ban {
 		v = utils.Forbid
 	}
 	if err := models.RDB.Set(c, permissionParam.Option, v, time.Duration(0)).Err(); err != nil {

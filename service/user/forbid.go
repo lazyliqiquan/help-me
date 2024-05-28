@@ -10,9 +10,9 @@ import (
 type ForbidParam struct {
 	UserId int `form:"userId" binding:"required"`
 	//修改的是那种权限
-	BanOption int `form:"banOption" binding:"required"`
+	BanOption *int `form:"banOption" binding:"required"`
 	//true 给帖子添加某种权限 false 给帖子撤销某种权限
-	IsAdd bool `form:"isAdd" binding:"required"`
+	IsAdd *bool `form:"isAdd" binding:"required"`
 }
 
 // ForbidUser 操作用户权限
@@ -20,9 +20,9 @@ type ForbidParam struct {
 // @Summary 修改用户权限
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param userId formData int true 1
-// @Param banOption formData int true 0
-// @Param isAdd formData bool true false
+// @Param userId formData int true "1"
+// @Param banOption formData int true "0"
+// @Param isAdd formData bool true "false"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /admin/forbid-user [post]
 func ForbidUser(c *gin.Context) {
@@ -53,10 +53,10 @@ func ForbidUser(c *gin.Context) {
 		})
 		return
 	}
-	if forbidParam.IsAdd {
-		userBan = models.AddPermit(forbidParam.BanOption, userBan)
+	if *forbidParam.IsAdd {
+		userBan = models.AddPermit(*forbidParam.BanOption, userBan)
 	} else {
-		userBan = models.SubPermit(forbidParam.BanOption, userBan)
+		userBan = models.SubPermit(*forbidParam.BanOption, userBan)
 	}
 	err = models.DB.Model(&models.User{ID: forbidParam.UserId}).Update("ban", userBan).Error
 	if err != nil {

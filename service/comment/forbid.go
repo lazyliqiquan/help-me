@@ -8,8 +8,8 @@ import (
 )
 
 type OneCommentBan struct {
-	CommentId int  `form:"commentId" binding:"required"`
-	Ban       bool `form:"ban" binding:"required"`
+	CommentId int   `form:"commentId" binding:"required"`
+	Ban       *bool `form:"ban" binding:"required"`
 }
 
 // ForbidOneComment 操作某条评论的权限
@@ -17,8 +17,8 @@ type OneCommentBan struct {
 // @Summary 封禁某条评论
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param commentId formData int true 1
-// @Param ban formData bool true false
+// @Param commentId formData int true "1"
+// @Param ban formData bool true "false"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /admin/forbid-one-comment [post]
 func ForbidOneComment(c *gin.Context) {
@@ -31,7 +31,7 @@ func ForbidOneComment(c *gin.Context) {
 		})
 		return
 	}
-	err := models.DB.Model(&models.Comment{ID: oneCommentBan.CommentId}).Update("ban", oneCommentBan.Ban).Error
+	err := models.DB.Model(&models.Comment{ID: oneCommentBan.CommentId}).Update("ban", *oneCommentBan.Ban).Error
 	if err != nil {
 		utils.Logger.Errorln(err)
 		c.JSON(http.StatusOK, gin.H{

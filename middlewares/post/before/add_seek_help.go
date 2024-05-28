@@ -2,10 +2,6 @@ package before
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/lazyliqiquan/help-me/models"
-	"github.com/lazyliqiquan/help-me/utils"
-	"net/http"
-	"strconv"
 )
 
 // AddSeekHelp
@@ -16,34 +12,6 @@ import (
 // 4. 该用户的悬赏金额是否大于零
 func AddSeekHelp() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userId := c.GetInt("id")
-		var reward int
-		if err := models.DB.Model(&models.User{}).Where("id = ?", userId).Select("reward").Scan(&reward).Error; err != nil {
-			utils.Logger.Errorln(err)
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "Mysql operation failed",
-			})
-			c.Abort()
-		}
-		selectReward, err := strconv.Atoi(c.PostForm("reward"))
-		if err != nil {
-			utils.Logger.Errorln(err)
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "The reward parameter is not a legal integer",
-			})
-			c.Abort()
-		}
-		if reward <= 0 || selectReward > reward || selectReward <= 0 {
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "Illegality reward",
-			})
-			c.Abort()
-		}
-		c.Set("selectReward", selectReward)
-		c.Set("reward", reward)
 		c.Next()
 	}
 }

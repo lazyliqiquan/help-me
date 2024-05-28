@@ -8,8 +8,8 @@ import (
 )
 
 type CollectParam struct {
-	PostId int  `form:"postId" binding:"required"`
-	IsAdd  bool `form:"isAdd" binding:"required"`
+	PostId int   `form:"postId" binding:"required"`
+	IsAdd  *bool `form:"isAdd" binding:"required"`
 }
 
 // UpdateCollect 修改用户收藏夹
@@ -17,8 +17,8 @@ type CollectParam struct {
 // @Summary 修改用户收藏夹
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param postId formData int true 1
-// @Param isAdd formData bool true false
+// @Param postId formData int true "1"
+// @Param isAdd formData bool true "false"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /update-collect [post]
 func UpdateCollect(c *gin.Context) {
@@ -42,7 +42,7 @@ func UpdateCollect(c *gin.Context) {
 		})
 		return
 	}
-	if collectParam.IsAdd {
+	if *collectParam.IsAdd {
 		collectList = append(collectList, collectParam.PostId)
 	} else {
 		index := -1

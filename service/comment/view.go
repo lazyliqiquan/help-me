@@ -22,9 +22,9 @@ type RequestComment struct {
 // @Tags 公共方法
 // @Summary 浏览帖子所对应的评论
 // @Accept multipart/form-data
-// @Param postId formData int true 1
-// @Param page formData int true 1
-// @Param pageSize formData int true 20
+// @Param postId formData int true "1"
+// @Param page formData int true "1"
+// @Param pageSize formData int true "20"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /view/comment [post]
 func View(c *gin.Context) {
@@ -48,7 +48,8 @@ func View(c *gin.Context) {
 			return db.Where("ban = ? Or ban = ?", false, userId != 0 && models.JudgePermit(models.Admin, userBan)).
 				Count(&total).Preload("User", func(db2 *gorm.DB) *gorm.DB {
 				return db2.Select("id", "name", "avatar")
-			}).Offset((requestComment.Page - 1) * requestComment.PageSize).Limit(requestComment.PageSize)
+			}).
+				Offset((requestComment.Page - 1) * requestComment.PageSize).Limit(requestComment.PageSize)
 		}).Select("id", "ban").First(&post).Error
 	if err != nil {
 		utils.Logger.Errorln(err)

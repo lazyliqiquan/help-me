@@ -10,7 +10,7 @@ var location *time.Location
 
 func init() {
 	var err error
-	location, err = time.LoadLocation("Asia/Beijing")
+	location, err = time.LoadLocation("Asia/Shanghai")
 	if err != nil {
 		RootLogger.Fatal("Unable to load time zone ", zap.Error(err))
 	}

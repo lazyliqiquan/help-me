@@ -13,7 +13,7 @@ import (
 // @Tags 公共方法
 // @Summary 浏览求助帖子，但其实修改一下swagger的Router，也可以浏览帮助帖子
 // @Accept multipart/form-data
-// @Param postId formData string true "postId"
+// @Param postId formData string true "1"
 // @Success 200 {string} json "{"code":"0"}"
 // @Router /view/seek-help [post]
 func ViewPost(c *gin.Context) {
@@ -28,7 +28,7 @@ func ViewPost(c *gin.Context) {
 		return
 	}
 	post := &models.Post{ID: postId}
-	err = models.DB.Model(post).Preload("Users", func(db *gorm.DB) *gorm.DB {
+	err = models.DB.Model(post).Preload("User", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id", "name", "avatar", "reward", "register_time")
 	}).Preload("PostStats").First(post).Error
 	if err != nil {

@@ -28,7 +28,7 @@ type NewComment struct {
 // @Summary 添加新的评论
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param postId formData int true 1
+// @Param postId formData int true "1"
 // @Param text formData string true "Hello"
 // @Param sendTime formData string true "2024-05-26 15:10:00"
 // @Success 200 {string} json "{"code":"0"}"

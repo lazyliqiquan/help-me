@@ -36,6 +36,7 @@ func login(r *gin.Engine) {
 		loginAuth.POST("/mark-single-info", click.MarkSingleInfo)
 		loginAuth.POST("/mark-all-info", click.MarkAllInfo)
 		loginAuth.POST("/message-list", post.MessageList)
+		loginAuth.POST("/before-edit", post.BeforeEdit)
 	}
 	modifyAuth := loginAuth.Group("/modify")
 	{
@@ -45,7 +46,7 @@ func login(r *gin.Engine) {
 	}
 	publishAuth := loginAuth.Group("/publish")
 	{
-		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.AddSeekHelp(), before.Common(true), post.AddPost)
+		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.Common(true), post.AddPost)
 		publishAuth.POST("/lend-hand", middlewares.Publish(middlewares.LendHandItem), before.AddLendHand(), before.Common(true), post.AddPost)
 		publishAuth.POST("/comment", middlewares.Publish(middlewares.CommentItem), comment.Add)
 	}
