@@ -41,7 +41,7 @@ func SendCode(c *gin.Context) {
 		return
 	} else if ttlResult != time.Duration(-2) {
 		c.JSON(http.StatusOK, gin.H{
-			"code": 1,
+			"code": 0,
 			"msg":  "The verification code has not expired, please use the previous one",
 			"data": gin.H{
 				"ttl": ttlResult.Seconds(),

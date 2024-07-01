@@ -215,6 +215,37 @@ paths:
       summary: 采纳帮助者的帖子
       tags:
       - 用户方法
+  /before-edit:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "0"
+        in: formData
+        name: postType
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: seekHelpId
+        type: integer
+      - description: "2"
+        in: formData
+        name: lendHandId
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 编辑操作前的预判断
+      tags:
+      - 用户方法
   /collect-post-list:
     post:
       consumes:

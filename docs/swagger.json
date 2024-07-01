@@ -326,6 +326,53 @@
                 }
             }
         },
+        "/before-edit": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "用户方法"
+                ],
+                "summary": "编辑操作前的预判断",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication header",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "0",
+                        "name": "postType",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "1",
+                        "name": "seekHelpId",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "2",
+                        "name": "lendHandId",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"0\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/collect-post-list": {
             "post": {
                 "consumes": [

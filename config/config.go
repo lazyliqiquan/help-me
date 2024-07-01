@@ -15,10 +15,8 @@ type WebConfig struct {
 	SmtpServerPort         string `yaml:"smtpServerPort"`
 	SmtpServerVerification string `yaml:"smtpServerVerification"`
 	// 网站配置
-	MaxDocumentHeight   int `yaml:"maxDocumentHeight"`
-	MaxDocumentLength   int `yaml:"maxDocumentLength"`
-	MaxPictureSize      int `yaml:"maxPictureSize"`
-	MaxCodeFileSize     int `yaml:"maxCodeFileSize"`
+	MaxDocumentWords    int `yaml:"maxDocumentWords"`
+	MaxPicturesSize     int `yaml:"maxPicturesSize"`
 	DayUserCommentLimit int `yaml:"dayUserCommentLimit"`
 	//权限配置
 	SafeBan              string `yaml:"safeBan"`
@@ -45,9 +43,9 @@ type WebConfig struct {
 	RedisPath                string `yaml:"redisPath"`
 	RedisPort                string `yaml:"redisPort"`
 	RootFilePath             string `yaml:"rootFilePath"`
-	CodeFilePath             string `yaml:"codeFilePath"`
 	ImageFilePath            string `yaml:"imageFilePath"`
 	AvatarFilePath           string `yaml:"avatarFilePath"`
+	SecondImageDirAmount     int    `yaml:"secondImageDirAmount"`
 	MaxIdleConnects          int    `yaml:"maxIdleConnects"`
 	MaxMultipartMemory       int    `yaml:"maxMultipartMemory"`
 	// 是否处于debug
@@ -63,10 +61,8 @@ type WebConfig struct {
 func (c *WebConfig) GetRestrictionSetting() map[string]int {
 	restriction := make(map[string]int)
 	// 网站配置
-	restriction["maxDocumentHeight"] = c.MaxDocumentHeight
-	restriction["maxDocumentLength"] = c.MaxDocumentLength
-	restriction["maxPictureSize"] = c.MaxPictureSize
-	restriction["maxCodeFileSize"] = c.MaxCodeFileSize
+	restriction["maxDocumentWords"] = c.MaxDocumentWords
+	restriction["maxPicturesSize"] = c.MaxPicturesSize
 	restriction["dayUserCommentLimit"] = c.DayUserCommentLimit
 	return restriction
 }
@@ -115,7 +111,6 @@ func init() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	Config.CodeFilePath = Config.RootFilePath + Config.CodeFilePath
 	Config.ImageFilePath = Config.RootFilePath + Config.ImageFilePath
 	Config.AvatarFilePath = Config.RootFilePath + Config.AvatarFilePath
 }

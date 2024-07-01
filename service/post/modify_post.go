@@ -55,9 +55,6 @@ func ModifyPost(c *gin.Context) {
 			utils.Logger.Errorln(err)
 		}
 	}
-	if err := os.Remove(oldPost.PostStats.CodePath); err != nil {
-		utils.Logger.Errorln(err)
-	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "Modify post successfully",

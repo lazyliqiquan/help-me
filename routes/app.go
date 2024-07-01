@@ -24,8 +24,7 @@ func Router(config *config.WebConfig) *gin.Engine {
 	}
 	r.MaxMultipartMemory = int64(config.MaxMultipartMemory) << 20
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	login(r)
-	logout(r)
+	routes(r)
 	if !config.Debug {
 		err := r.RunTLS(config.WebPath, "assets/https/cert.pem", "assets/https/key.pem")
 		if err != nil {

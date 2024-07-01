@@ -8,6 +8,7 @@ import (
 	"github.com/lazyliqiquan/help-me/utils"
 	math_rand "math/rand"
 	"os"
+	"strconv"
 
 	"github.com/lazyliqiquan/help-me/config"
 	_ "github.com/lazyliqiquan/help-me/docs"
@@ -40,10 +41,16 @@ func initRand() {
 }
 
 func initFiles(config *config.WebConfig) {
-	dirs := []string{config.CodeFilePath, config.ImageFilePath, config.AvatarFilePath}
+	dirs := []string{config.ImageFilePath, config.AvatarFilePath}
 	for _, v := range dirs {
 		if err := os.MkdirAll(v, 0755); err != nil {
-			utils.RootLogger.Fatal("Init files create fail : ", zap.Error(err))
+			utils.RootLogger.Fatal("Init root dir create fail : ", zap.Error(err))
+		}
+	}
+	for i := 0; i < config.SecondImageDirAmount; i++ {
+		secondDirName := config.ImageFilePath + strconv.Itoa(i) + "/"
+		if err := os.MkdirAll(secondDirName, 0755); err != nil {
+			utils.RootLogger.Fatal("Init second dir create fail : ", zap.Error(err))
 		}
 	}
 }

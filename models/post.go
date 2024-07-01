@@ -5,7 +5,6 @@ type Post struct {
 	Title       string
 	CreateTime  string
 	Reward      int //可以通过是否大于0来判断是求助帖子还是帮助帖子
-	Language    string
 	LikeSum     int
 	LendHandSum int
 	CommentSum  int
@@ -24,10 +23,9 @@ type Post struct {
 type PostStats struct {
 	ID         int
 	UpdateTime string
-	CodePath   string
 	PageView   int
 	Document   string
-	ImagePath  GormStrList
+	ImagePath  GormStrList //删除或者修改帖子的时候，还要知道该帖子包含哪些图片，便于删除
 	PostID     int
 }
 

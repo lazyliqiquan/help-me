@@ -6,18 +6,23 @@ import (
 	"github.com/lazyliqiquan/help-me/middlewares/post/before"
 	"github.com/lazyliqiquan/help-me/service/click"
 	"github.com/lazyliqiquan/help-me/service/comment"
-	"github.com/lazyliqiquan/help-me/service/other"
 	"github.com/lazyliqiquan/help-me/service/post"
 	"github.com/lazyliqiquan/help-me/service/setting"
 	"github.com/lazyliqiquan/help-me/service/user"
 )
 
 // 需要完成登录才可访问
-func login(r *gin.Engine) {
+func routes(r *gin.Engine) {
+	//登录模块还是要单独分出来，免得管理员的token过期了，然后网站还处于安全模式，那就死锁了
+	r.POST("/login", user.Login)
 	//在安全模式下，仅管理员可操作
 	safeAuth := r.Group("/", middlewares.TokenSafeModel())
 	{
-		safeAuth.POST("/download-file", other.DownloadFile)
+		safeAuth.POST("/send-code", user.SendCode)
+		safeAuth.POST("/register", user.Register)
+		safeAuth.POST("/find-password", user.FindPassword)
+		safeAuth.Static("/files", "./files")
+		//safeAuth.POST("/download-file", other.DownloadFile)
 		safeAuth.POST("/logout-post-list", post.LogoutPostList)
 	}
 	viewAuth := safeAuth.Group("/view")

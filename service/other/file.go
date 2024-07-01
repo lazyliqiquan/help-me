@@ -26,6 +26,7 @@ func DownloadFile(c *gin.Context) {
 }
 
 // judgeLegalPath 判断传递过来的文件路径是否合法
+// 既然静态文件里面已经指定了是该项目下的files文件，那么应该不需要再校验文件路径是否合法了
 func judgeLegalPath(filePath string) (string, bool) {
 	if filePath == "" {
 		return "The path to the file cannot be empty", false
@@ -38,7 +39,6 @@ func judgeLegalPath(filePath string) (string, bool) {
 	}
 	for _, v := range []string{
 		config.Config.ImageFilePath,
-		config.Config.CodeFilePath,
 		config.Config.AvatarFilePath} {
 		if list[1]+"/" == v {
 			return "", true

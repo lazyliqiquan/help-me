@@ -66,30 +66,6 @@ func TokenSafeModel() gin.HandlerFunc {
 	}
 }
 
-// OtherSafeModel 主要针对找回密码和注册
-func OtherSafeModel() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		safeBan, err := models.RDB.Get(c, "safeBan").Result()
-		if err != nil {
-			utils.Logger.Errorln(err)
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "Redis operation failed",
-			})
-			c.Abort()
-		}
-		if safeBan != utils.Permit {
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "The site is currently in safe mode and this feature is not available",
-			})
-			c.Abort()
-		}
-		utils.Logger.Infoln("OtherSafeModel")
-		c.Next()
-	}
-}
-
 // LoginModel 判断是否登录
 func LoginModel() gin.HandlerFunc {
 	return func(c *gin.Context) {

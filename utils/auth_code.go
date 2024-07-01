@@ -12,17 +12,17 @@ import (
 	"github.com/lazyliqiquan/help-me/config"
 )
 
-// 将给定字符串进行md5加密
+// GetMd5 将给定字符串进行md5加密
 func GetMd5(s string) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(s)))
 }
 
-// 生成唯一码
+// GetUUID 生成唯一码
 func GetUUID() string {
 	return uuid.New().String()
 }
 
-// 生成验证码
+// GetRand 生成验证码
 func GetRand() string {
 	s := ""
 	for i := 0; i < 6; i++ {
@@ -31,7 +31,7 @@ func GetRand() string {
 	return s
 }
 
-// 向指定邮箱发送验证码
+// SendCode 向指定邮箱发送验证码
 func SendCode(toUserEmail, code string) error {
 	e := email.NewEmail()
 	e.From = config.Config.SenderMailbox
