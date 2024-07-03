@@ -50,7 +50,6 @@ func Init(config *config.WebConfig) {
 		utils.RootLogger.Fatal("Create tables fail : ", zap.Error(err))
 	}
 	utils.Logger.Infoln("Help-me mysql init succeed !")
-
 	redisDsn := config.RedisPath + ":" + config.RedisPort
 	if config.Debug {
 		redisDsn = config.DebugRedisPath + ":" + config.DebugRedisPort

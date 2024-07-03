@@ -50,7 +50,9 @@ func BeforeEdit(c *gin.Context) {
 		})
 		return
 	}
-	for k := range config.Config.GetRestrictionSetting() {
+	postRestrictions := config.Config.GetRestrictionSetting()
+	delete(postRestrictions, "dayUserCommentLimit")
+	for k := range postRestrictions {
 		v, err := models.RDB.Get(c, k).Int()
 		if err != nil {
 			utils.Logger.Errorln(err)

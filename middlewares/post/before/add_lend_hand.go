@@ -33,7 +33,8 @@ func AddLendHand() gin.HandlerFunc {
 			})
 			c.Abort()
 		}
-		err = models.DB.Model(&models.Post{}).Preload("LendHands", "user_id = ?", userId).Where("id = ?", post.ID).Select("id", "ban").First(post).Error
+		err = models.DB.Model(&models.Post{}).Preload("LendHands", "user_id = ?", userId).
+			Where("id = ?", post.ID).Select("id", "ban").First(post).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				c.JSON(http.StatusOK, gin.H{
