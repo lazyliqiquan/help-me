@@ -62,7 +62,7 @@ func MarkSingleInfo(c *gin.Context) {
 
 // MarkAllInfo 将所有消息标记为已读
 // @Tags 用户方法
-// @Summary 将所以消息标记为已读
+// @Summary 将所有消息标记为已读
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
 // @Success 200 {string} json "{"code":"0"}"

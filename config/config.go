@@ -15,6 +15,7 @@ type WebConfig struct {
 	SmtpServerPort         string `yaml:"smtpServerPort"`
 	SmtpServerVerification string `yaml:"smtpServerVerification"`
 	// 网站配置
+	MaxCommentWords     int `yaml:"maxCommentWords"`
 	MaxDocumentWords    int `yaml:"maxDocumentWords"`
 	MaxPicturesSize     int `yaml:"maxPicturesSize"`
 	DayUserCommentLimit int `yaml:"dayUserCommentLimit"`
@@ -61,6 +62,7 @@ type WebConfig struct {
 func (c *WebConfig) GetRestrictionSetting() map[string]int {
 	restriction := make(map[string]int)
 	// 网站配置
+	restriction["maxCommentWords"] = c.MaxCommentWords
 	restriction["maxDocumentWords"] = c.MaxDocumentWords
 	restriction["maxPicturesSize"] = c.MaxPicturesSize
 	restriction["dayUserCommentLimit"] = c.DayUserCommentLimit

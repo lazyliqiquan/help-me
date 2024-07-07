@@ -3,6 +3,8 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lazyliqiquan/help-me/middlewares"
+	middleComment "github.com/lazyliqiquan/help-me/middlewares/comment"
+	middlePost "github.com/lazyliqiquan/help-me/middlewares/post"
 	"github.com/lazyliqiquan/help-me/middlewares/post/before"
 	"github.com/lazyliqiquan/help-me/service/click"
 	"github.com/lazyliqiquan/help-me/service/comment"
@@ -24,12 +26,8 @@ func routes(r *gin.Engine) {
 		safeAuth.Static("/files", "./files")
 		//safeAuth.POST("/download-file", other.DownloadFile)
 		safeAuth.POST("/logout-post-list", post.LogoutPostList)
-	}
-	viewAuth := safeAuth.Group("/view")
-	{
-		viewAuth.POST("/seek-help", middlewares.View(middlewares.SeekHelpItem), post.ViewPost)
-		viewAuth.POST("/lend-hand", middlewares.View(middlewares.LendHandItem), post.ViewPost)
-		viewAuth.POST("/comment", middlewares.View(middlewares.CommentItem), comment.View)
+		safeAuth.POST("/view-post", middlePost.View(), post.ViewPost)
+		safeAuth.POST("/view-comment", middleComment.View(), comment.View)
 	}
 	loginAuth := safeAuth.Group("/", middlewares.LoginModel())
 	{
@@ -41,19 +39,10 @@ func routes(r *gin.Engine) {
 		loginAuth.POST("/mark-single-info", click.MarkSingleInfo)
 		loginAuth.POST("/mark-all-info", click.MarkAllInfo)
 		loginAuth.POST("/message-list", post.MessageList)
-		loginAuth.POST("/before-edit", post.BeforeEdit)
-	}
-	modifyAuth := loginAuth.Group("/modify")
-	{
-		modifyAuth.POST("/seek-help", middlewares.Modify(middlewares.SeekHelpItem), before.ModifySeekHelp(), before.Common(), post.ModifyPost)
-		modifyAuth.POST("/lend-hand", middlewares.Modify(middlewares.LendHandItem), before.ModifyLendHand(), before.Common(), post.ModifyPost)
-		modifyAuth.POST("/comment", middlewares.Modify(middlewares.CommentItem), comment.Modify)
-	}
-	publishAuth := loginAuth.Group("/publish")
-	{
-		publishAuth.POST("/seek-help", middlewares.Publish(middlewares.SeekHelpItem), before.Common(), post.AddPost)
-		publishAuth.POST("/lend-hand", middlewares.Publish(middlewares.LendHandItem), before.AddLendHand(), before.Common(), post.AddPost)
-		publishAuth.POST("/comment", middlewares.Publish(middlewares.CommentItem), comment.Add)
+		loginAuth.POST("/before-edit", middlePost.BanCheck(), post.BeforeEdit)
+		loginAuth.POST("/submit-post", middlePost.BanCheck(), before.Common(), post.SubmitPost)
+		loginAuth.POST("/add-comment", middleComment.BanCheck(0), middleComment.BeforeAdd(), comment.Add)
+		loginAuth.POST("/modify-comment", middleComment.BanCheck(1), comment.Modify)
 	}
 	adminAuth := loginAuth.Group("/admin", middlewares.AdminModel())
 	{

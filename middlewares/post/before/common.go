@@ -28,15 +28,15 @@ import (
 // imageFiles 新添加的图片
 func Common() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		postType := c.PostForm("postType")
+		postType := c.GetInt("postType")
 		title := c.PostForm("title")
 		createTime := c.PostForm("createTime")
 		updateTime := c.PostForm("updateTime")
 		document := c.PostForm("document")
 		tags := c.PostForm("tags")
-		if utils.IsNuiStrs(postType, title, document) ||
-			((postType == "0" || postType == "2") && createTime == "") ||
-			((postType == "1" || postType == "3") && updateTime == "") {
+		if utils.IsNuiStrs(title, document) ||
+			((postType == 0 || postType == 2) && createTime == "") ||
+			((postType == 1 || postType == 3) && updateTime == "") {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
 				"msg":  "Missing parameter",
@@ -93,9 +93,9 @@ func Common() gin.HandlerFunc {
 			imageFilesPath = append(imageFilesPath, imagePath)
 		}
 		//修改帖子，主要是删除无用的图片
-		if postType == "1" || postType == "3" {
+		if postType == 1 || postType == 3 {
 			var postId int
-			if postType == "1" {
+			if postType == 1 {
 				postId = c.GetInt("seekHelpId")
 			} else {
 				postId = c.GetInt("lendHandId")

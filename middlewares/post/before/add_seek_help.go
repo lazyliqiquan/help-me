@@ -2,6 +2,9 @@ package before
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lazyliqiquan/help-me/models"
+	"github.com/lazyliqiquan/help-me/utils"
+	"net/http"
 )
 
 // AddSeekHelp
@@ -12,6 +15,25 @@ import (
 // 4. 该用户的悬赏金额是否大于零
 func AddSeekHelp() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var reward int
+		userId := c.GetInt("id")
+		err := models.DB.Model(&models.User{ID: userId}).Select("reward").Scan(&reward).Error
+		if err != nil {
+			utils.Logger.Errorln(err)
+			c.JSON(http.StatusOK, gin.H{
+				"code": 1,
+				"msg":  "Mysql error",
+			})
+			c.Abort()
+		}
+		if reward <= 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"code": 1,
+				"msg":  "Your balance is insufficient",
+			})
+			c.Abort()
+		}
+		c.Set("reward", reward)
 		c.Next()
 	}
 }

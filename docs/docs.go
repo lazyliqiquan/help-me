@@ -15,6 +15,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/add-comment": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "用户方法"
+                ],
+                "summary": "添加新的评论",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication header",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "1",
+                        "name": "postId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Hello",
+                        "name": "text",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "2024-05-26 15:10:00",
+                        "name": "sendTime",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "0",
+                        "name": "isBefore",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"0\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/forbid-one-comment": {
             "post": {
                 "consumes": [
@@ -616,7 +672,7 @@ const docTemplate = `{
                 "tags": [
                     "用户方法"
                 ],
-                "summary": "将所以消息标记为已读",
+                "summary": "将所有消息标记为已读",
                 "parameters": [
                     {
                         "type": "string",
@@ -699,7 +755,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/modify/comment": {
+        "/modify-comment": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -719,7 +775,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "1",
-                        "name": "postId",
+                        "name": "id",
                         "in": "formData",
                         "required": true
                     },
@@ -733,7 +789,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "2024-05-26 15:10:00",
-                        "name": "updateTime",
+                        "name": "time",
                         "in": "formData",
                         "required": true
                     }
@@ -783,55 +839,6 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "20",
                         "name": "pageSize",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\":\"0\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/publish/comment": {
-            "post": {
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "用户方法"
-                ],
-                "summary": "添加新的评论",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authentication header",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "1",
-                        "name": "postId",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Hello",
-                        "name": "text",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "2024-05-26 15:10:00",
-                        "name": "sendTime",
                         "in": "formData",
                         "required": true
                     }
@@ -1014,7 +1021,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/view/comment": {
+        "/view-comment": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -1056,7 +1063,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/view/seek-help": {
+        "/view-post": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -1070,6 +1077,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "1",
                         "name": "postId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "0",
+                        "name": "viewType",
                         "in": "formData",
                         "required": true
                     }

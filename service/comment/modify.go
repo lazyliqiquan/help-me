@@ -7,6 +7,12 @@ import (
 	"net/http"
 )
 
+type NewComment struct {
+	Id   int    `form:"id" binding:"required"`
+	Text string `form:"text" binding:"required"`
+	Time string `form:"time" binding:"required"`
+}
+
 // Modify
 // 1. 该用户是否登录
 // 2. 若网站不允许修改评论，该用户是否是管理员
@@ -16,11 +22,11 @@ import (
 // @Summary 修改评论
 // @Accept multipart/form-data
 // @Param Authorization header string true "Authentication header"
-// @Param postId formData int true "1"
+// @Param id formData int true "1"
 // @Param text formData string true "Hello"
-// @Param updateTime formData string true "2024-05-26 15:10:00"
+// @Param time formData string true "2024-05-26 15:10:00"
 // @Success 200 {string} json "{"code":"0"}"
-// @Router /modify/comment [post]
+// @Router /modify-comment [post]
 func Modify(c *gin.Context) {
 	var newComment NewComment
 	if err := c.ShouldBind(&newComment); err != nil {

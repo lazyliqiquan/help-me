@@ -1,4 +1,4 @@
-package middlewares
+package comment
 
 import (
 	"github.com/gin-gonic/gin"
@@ -8,17 +8,17 @@ import (
 )
 
 var (
-	modifyBan     = []string{"modifySeekHelpBan", "modifyLendHandBan", "modifyCommentBan"}
-	userModifyBan = []int{models.ModifySeekHelp, models.ModifyLendHand, models.ModifyComment}
+	commentBanList = []string{"modifyCommentBan", "publishCommentBan"}
+	userBanList    = []int{models.PublishComment, models.ModifyComment}
 )
 
-// Modify
-// 预处理，判断用户是否具有修改权限
-func Modify(modifyType int) gin.HandlerFunc {
+// BanCheck
+// 评论权限检查
+func BanCheck(isAdd int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userBan := c.GetInt("ban")
 		if !models.JudgePermit(models.Admin, userBan) {
-			modifyBan, err := models.RDB.Get(c, modifyBan[modifyType]).Result()
+			modifyBan, err := models.RDB.Get(c, commentBanList[isAdd]).Result()
 			if err != nil {
 				utils.Logger.Errorln(err)
 				c.JSON(http.StatusOK, gin.H{
@@ -31,20 +31,20 @@ func Modify(modifyType int) gin.HandlerFunc {
 			if modifyBan != utils.Permit {
 				c.JSON(http.StatusOK, gin.H{
 					"code": 1,
-					"msg":  "The website is currently in modify safe mode and can only be operated by administrators",
+					"msg":  "The website is currently in" + commentBanList[isAdd] + " mode and can only be operated by administrators",
 				})
 				c.Abort()
 			}
 			//个人判断
-			if !models.JudgePermit(userModifyBan[modifyType], userBan) {
+			if !models.JudgePermit(userBanList[isAdd], userBan) {
 				c.JSON(http.StatusOK, gin.H{
 					"code": 1,
-					"msg":  "Your permission to modify is blocked",
+					"msg":  "Your permission is blocked",
 				})
 				c.Abort()
 			}
 		}
-		utils.Logger.Infoln("Modify judge")
+		utils.Logger.Infoln("comment ban check")
 		c.Next()
 	}
 }

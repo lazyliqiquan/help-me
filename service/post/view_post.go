@@ -14,8 +14,9 @@ import (
 // @Summary 浏览求助帖子，但其实修改一下swagger的Router，也可以浏览帮助帖子
 // @Accept multipart/form-data
 // @Param postId formData string true "1"
+// @Param viewType formData string true "0"
 // @Success 200 {string} json "{"code":"0"}"
-// @Router /view/seek-help [post]
+// @Router /view-post [post]
 func ViewPost(c *gin.Context) {
 	userBan := c.GetInt("ban")
 	postId, err := strconv.Atoi(c.PostForm("postId"))
@@ -50,7 +51,7 @@ func ViewPost(c *gin.Context) {
 		"code": 0,
 		"msg":  "Request post successfully",
 		"data": gin.H{
-			"postData": post,
+			"post": post,
 		},
 	})
 }

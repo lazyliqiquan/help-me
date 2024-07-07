@@ -26,7 +26,7 @@ type RequestComment struct {
 // @Param page formData int true "1"
 // @Param pageSize formData int true "20"
 // @Success 200 {string} json "{"code":"0"}"
-// @Router /view/comment [post]
+// @Router /view-comment [post]
 func View(c *gin.Context) {
 	var requestComment RequestComment
 	if err := c.ShouldBind(&requestComment); err != nil {

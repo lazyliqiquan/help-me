@@ -7,7 +7,6 @@ import (
 	"github.com/lazyliqiquan/help-me/utils"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 )
 
 // ModifySeekHelp
@@ -21,20 +20,9 @@ import (
 func ModifySeekHelp() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userId := c.GetInt("id")
-		userBan := c.GetInt("ban")
 		post := &models.Post{}
-		var err error
-		post.ID, err = strconv.Atoi(c.PostForm("seekHelpId"))
-		if err != nil {
-			utils.Logger.Errorln(err)
-			// 不是整数的情况应该交给前端处理，我们不需要额外说明
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "Seek help id nonentity",
-			})
-			c.Abort()
-		}
-		err = models.DB.Model(&models.Post{}).Preload("User").Where("id = ?", post.ID).Select("id", "ban", "lend_hand_sum").First(post).Error
+		post.ID = c.GetInt("seekHelpId")
+		err := models.DB.Model(&models.Post{}).Preload("User").Where("id = ?", post.ID).Select("id", "ban", "lend_hand_sum").First(post).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) { //传递过来的seekHelpId不存在，用户输入的url有问题
 				c.JSON(http.StatusOK, gin.H{
@@ -50,6 +38,7 @@ func ModifySeekHelp() gin.HandlerFunc {
 			})
 			c.Abort()
 		}
+		userBan := c.GetInt("ban")
 		if !models.JudgePermit(models.Admin, userBan) {
 			if userId != post.User.ID {
 				c.JSON(http.StatusOK, gin.H{
@@ -73,7 +62,6 @@ func ModifySeekHelp() gin.HandlerFunc {
 				c.Abort()
 			}
 		}
-		c.Set("seekHelpId", post.ID)
 		c.Next()
 	}
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/lazyliqiquan/help-me/utils"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 )
 
 // AddLendHand
@@ -20,20 +19,9 @@ import (
 func AddLendHand() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userId := c.GetInt("id")
-		userBan := c.GetInt("ban")
 		post := &models.Post{}
-		var err error
-		post.ID, err = strconv.Atoi(c.PostForm("seekHelpId"))
-		if err != nil {
-			utils.Logger.Errorln(err)
-			// 不是整数的情况应该交给前端处理，我们不需要额外说明
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "Seek help id nonentity",
-			})
-			c.Abort()
-		}
-		err = models.DB.Model(&models.Post{}).Preload("LendHands", "user_id = ?", userId).
+		post.ID = c.GetInt("seekHelpId")
+		err := models.DB.Model(&models.Post{}).Preload("LendHands", "user_id = ?", userId).
 			Where("id = ?", post.ID).Select("id", "ban").First(post).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -57,6 +45,7 @@ func AddLendHand() gin.HandlerFunc {
 			})
 			c.Abort()
 		}
+		userBan := c.GetInt("ban")
 		if !models.JudgePermit(models.AddLendHand, post.Ban) && !models.JudgePermit(models.Admin, userBan) {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 1,
@@ -64,7 +53,6 @@ func AddLendHand() gin.HandlerFunc {
 			})
 			c.Abort()
 		}
-		c.Set("seekHelpId", post.ID)
 		c.Next()
 	}
 }

@@ -1,6 +1,44 @@
 info:
   contact: {}
 paths:
+  /add-comment:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: formData
+        name: postId
+        required: true
+        type: integer
+      - description: Hello
+        in: formData
+        name: text
+        required: true
+        type: string
+      - description: "2024-05-26 15:10:00"
+        in: formData
+        name: sendTime
+        required: true
+        type: string
+      - description: "0"
+        in: formData
+        name: isBefore
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"0"}'
+          schema:
+            type: string
+      summary: 添加新的评论
+      tags:
+      - 用户方法
   /admin/forbid-one-comment:
     post:
       consumes:
@@ -411,7 +449,7 @@ paths:
           description: '{"code":"0"}'
           schema:
             type: string
-      summary: 将所以消息标记为已读
+      summary: 将所有消息标记为已读
       tags:
       - 用户方法
   /mark-single-info:
@@ -455,7 +493,7 @@ paths:
       summary: 消息列表
       tags:
       - 用户方法
-  /modify/comment:
+  /modify-comment:
     post:
       consumes:
       - multipart/form-data
@@ -467,7 +505,7 @@ paths:
         type: string
       - description: "1"
         in: formData
-        name: postId
+        name: id
         required: true
         type: integer
       - description: Hello
@@ -477,7 +515,7 @@ paths:
         type: string
       - description: "2024-05-26 15:10:00"
         in: formData
-        name: updateTime
+        name: time
         required: true
         type: string
       responses:
@@ -519,39 +557,6 @@ paths:
           schema:
             type: string
       summary: 请求私人帖子列表
-      tags:
-      - 用户方法
-  /publish/comment:
-    post:
-      consumes:
-      - multipart/form-data
-      parameters:
-      - description: Authentication header
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: "1"
-        in: formData
-        name: postId
-        required: true
-        type: integer
-      - description: Hello
-        in: formData
-        name: text
-        required: true
-        type: string
-      - description: "2024-05-26 15:10:00"
-        in: formData
-        name: sendTime
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{"code":"0"}'
-          schema:
-            type: string
-      summary: 添加新的评论
       tags:
       - 用户方法
   /register:
@@ -666,7 +671,7 @@ paths:
       summary: 给某个帖子(求助或者帮助)点赞
       tags:
       - 用户方法
-  /view/comment:
+  /view-comment:
     post:
       consumes:
       - multipart/form-data
@@ -694,7 +699,7 @@ paths:
       summary: 浏览帖子所对应的评论
       tags:
       - 公共方法
-  /view/seek-help:
+  /view-post:
     post:
       consumes:
       - multipart/form-data
@@ -702,6 +707,11 @@ paths:
       - description: "1"
         in: formData
         name: postId
+        required: true
+        type: string
+      - description: "0"
+        in: formData
+        name: viewType
         required: true
         type: string
       responses:

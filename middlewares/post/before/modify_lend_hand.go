@@ -7,7 +7,6 @@ import (
 	"github.com/lazyliqiquan/help-me/utils"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 )
 
 // ModifyLendHand
@@ -22,26 +21,9 @@ import (
 func ModifyLendHand() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userId := c.GetInt("id")
-		userBan := c.GetInt("ban")
-		seekHelpId, err := strconv.Atoi(c.PostForm("seekHelpId"))
-		if err != nil {
-			utils.Logger.Errorln(err)
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "Seek help id nonentity",
-			})
-			c.Abort()
-		}
-		lendHandId, err := strconv.Atoi(c.PostForm("lendHandId"))
-		if err != nil {
-			utils.Logger.Errorln(err)
-			c.JSON(http.StatusOK, gin.H{
-				"code": 1,
-				"msg":  "Lend hand id nonentity",
-			})
-			c.Abort()
-		}
-		err = models.DB.Model(&models.Post{}).First(&models.Post{}, "id = ?", seekHelpId).Error
+		seekHelpId := c.GetInt("seekHelpId")
+		lendHandId := c.GetInt("lendHandId")
+		err := models.DB.Model(&models.Post{}).First(&models.Post{}, "id = ?", seekHelpId).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				c.JSON(http.StatusOK, gin.H{
@@ -74,6 +56,7 @@ func ModifyLendHand() gin.HandlerFunc {
 			})
 			c.Abort()
 		}
+		userBan := c.GetInt("ban")
 		if !models.JudgePermit(models.Admin, userBan) {
 			if !models.JudgePermit(models.Modify, post.Ban) {
 				c.JSON(http.StatusOK, gin.H{
@@ -97,8 +80,7 @@ func ModifyLendHand() gin.HandlerFunc {
 				c.Abort()
 			}
 		}
-		c.Set("seekHelpId", seekHelpId)
-		c.Set("lendHandId", lendHandId)
+
 		c.Next()
 	}
 }

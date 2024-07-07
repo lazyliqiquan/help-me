@@ -1,27 +1,31 @@
-package middlewares
+package post
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lazyliqiquan/help-me/models"
 	"github.com/lazyliqiquan/help-me/utils"
 	"net/http"
-)
-
-const (
-	SeekHelpItem int = iota
-	LendHandItem
-	CommentItem
+	"strconv"
 )
 
 var (
-	viewBan      = []string{"viewSeekHelpBan", "viewLendHandBan", "viewCommentBan"}
-	loginViewBan = []string{"loginViewSeekHelpBan", "loginViewLendHandBan", "loginViewCommentBan"}
+	viewBan      = []string{"viewSeekHelpBan", "viewLendHandBan"}
+	loginViewBan = []string{"loginViewSeekHelpBan", "loginViewLendHandBan"}
 )
 
 // View
 // 预处理，判断用户是否具有查看权限
-func View(viewType int) gin.HandlerFunc {
+func View() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		viewType, err := strconv.Atoi(c.PostForm("viewType"))
+		if err != nil {
+			utils.Logger.Errorln(err)
+			c.JSON(http.StatusOK, gin.H{
+				"code": 1,
+				"msg":  "View type is not a integer",
+			})
+			c.Abort()
+		}
 		viewBan, err := models.RDB.Get(c, viewBan[viewType]).Result()
 		if err != nil {
 			utils.Logger.Errorln(err)
@@ -57,7 +61,7 @@ func View(viewType int) gin.HandlerFunc {
 			})
 			c.Abort()
 		}
-		utils.Logger.Infoln("View judge")
+		utils.Logger.Infoln("Post view")
 		c.Next()
 	}
 }
